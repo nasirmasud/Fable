@@ -73,6 +73,7 @@ export default function TopWriters() {
                       src={writer.avatar}
                       alt={writer.name}
                       fill
+                      sizes="150px"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>

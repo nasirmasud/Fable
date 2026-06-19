@@ -40,7 +40,7 @@ export default function FeaturedEbooks() {
       category: "Mystery",
       rating: 4.5,
       price: "$3.99",
-      cover: "https://images.unsplash.com/photo-1532012164546-f432f2c3edd0?q=80&w=400&auto=format&fit=crop",
+      cover: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=400&auto=format&fit=crop",
     },
     {
       id: 5,

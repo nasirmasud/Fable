@@ -1,149 +1,155 @@
 "use client";
 
-import { LogOut, Menu, Moon, Sun, X } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { authClient } from "@/lib/auth-client";
+import { LayoutDashboard, LogOut, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+
+const navLinks = [
+  { name: "Home", href: "/" },
+  { name: "Browse Ebooks", href: "/browse" },
+  { name: "Dashboard", href: "/dashboard" },
+];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const { data: session } = authClient.useSession();
 
-  const isLoggedIn = false;
-
-  const mockUser = {
-    role: "Recruiter",
-    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100&auto=format&fit=crop",
+  const handleLogout = async () => {
+    await authClient.signOut();
+    window.location.href = "/login";
   };
 
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Browse Ebooks", href: "/browse" },
-    { name: "Dashboard", href: "/dashboard" },
-  ];
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 0);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <nav className="w-full bg-[#070314] dark:bg-[#070314] text-white border-b border-white/5 sticky top-0 z-50 backdrop-blur-md bg-opacity-95 transition-colors duration-300">
+    <nav className="w-full bg-[#070314] text-white border-b border-white/5 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
       <div className="w-full px-6 md:px-10 lg:px-16 mx-auto">
         <div className="flex items-center justify-between h-20">
 
-          <div className="shrink-0 flex items-center">
-            <Link href="/" className="flex items-center gap-2.5">
-              <Image
-                src="/logo.png"
-                alt="Fable Logo"
-                width={34}
-                height={34}
-                priority
-              />
-              <span className="text-2xl font-sans font-bold tracking-tight bg-linear-to-r from-white via-purple-100 to-purple-300 bg-clip-text text-transparent">
-                Fable
-              </span>
-            </Link>
-          </div>
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image src="/logo.png" alt="Fable Logo" width={34} height={34} priority />
+            <span className="text-2xl font-bold bg-linear-to-r from-white to-purple-300 bg-clip-text text-transparent">
+              Fable
+            </span>
+          </Link>
 
-          {/* Desktop Menu */}
+          {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center space-x-10">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`text-[15px] font-medium transition-all duration-200 relative py-2 ${isActive ? "text-white font-semibold" : "text-gray-400 hover:text-white"}`}
-                >
-                  {link.name}
-                  {isActive && <span className="absolute bottom-0 left-0 w-full h-[2.5px] bg-[#7c3aed] rounded-full" />}
-                </Link>
-              );
-            })}
-          </div>
-
-          <div className="hidden md:flex items-center space-x-6">
-            {mounted && (
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="relative w-14 h-7 bg-white/10 dark:bg-purple-950/40 rounded-full p-1 border border-white/10 dark:border-purple-500/20 flex items-center justify-between cursor-pointer transition-colors duration-300"
-              >
-                <div className={`absolute w-5 h-5 bg-linear-to-r from-[#6344f5] to-[#8a3ffc] rounded-full top-0.75 transition-all duration-300 flex items-center justify-center shadow-md ${theme === "dark" ? "left-7.75" : "left-1"}`}>
-                  {theme === "dark" ? <Moon size={11} className="text-white fill-current" /> : <Sun size={11} className="text-white fill-current" />}
-                </div>
-                <Sun size={13} className={`ml-1 text-amber-400 ${theme === "light" ? "opacity-0" : "opacity-40"}`} />
-                <Moon size={13} className={`mr-1 text-purple-300 ${theme === "dark" ? "opacity-0" : "opacity-40"}`} />
-              </button>
-            )}
-
-            {isLoggedIn ? (
-              <div className="flex items-center space-x-4 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-xl">
-                <div className="relative w-9 h-9 rounded-full overflow-hidden border border-purple-500/30">
-                  <Image
-                    src={mockUser.avatar}
-                    alt="User Avatar"
-                    width={36}
-                    height={36}
-                    className="object-cover"
-                  />
-                </div>
-                <button
-                  onClick={() => alert("Logout clicked")}
-                  className="p-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-lg transition-all duration-200 cursor-pointer"
-                >
-                  <LogOut size={15} />
-                </button>
-              </div>
-            ) : (
-              <>
-                <Link href="/login" className="text-sm font-medium text-gray-300 hover:text-white px-5 py-2.5 rounded-lg border border-white/10 bg-white/2 hover:bg-white/6 transition-all duration-200">
-                  Login
-                </Link>
-                <Link href="/signup" className="text-sm font-medium bg-linear-to-r from-[#6344f5] to-[#8a3ffc] hover:from-[#5032e6] hover:to-[#782ee6] text-white px-6 py-2.5 rounded-lg shadow-lg shadow-purple-500/15 font-sans tracking-wide transition-all duration-300 transform hover:-translate-y-px">
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Menu */}
-          <div className="flex md:hidden items-center space-x-4">
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-gray-400 hover:text-white cursor-pointer">
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Drawer */}
-      {isOpen && (
-        <div className="md:hidden bg-[#0d0724] border-b border-white/5">
-          <div className="px-4 pt-2 pb-5 space-y-1">
             {navLinks.map((link) => (
-              <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)} className="block px-3 py-3 text-gray-400 hover:text-white">
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`text-[15px] transition-colors ${pathname === link.href
+                  ? "text-white font-semibold"
+                  : "text-gray-400 hover:text-white"
+                  }`}
+              >
                 {link.name}
               </Link>
             ))}
-            <div className="border-t border-white/5 pt-4 mt-4">
-              {isLoggedIn && (
-                <div className="flex items-center gap-3 p-3">
-                  <Image src={mockUser.avatar} alt="User" width={36} height={36} className="rounded-full object-cover" />
-                  <span className="text-xs text-purple-300 uppercase">{mockUser.role}</span>
-                </div>
-              )}
-            </div>
           </div>
+
+          {/* Right Section */}
+          <div className="flex items-center gap-4">
+
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+              className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {resolvedTheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
+            {/* User / Auth */}
+            {session ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  nativeButton={false}
+                  render={
+                    <div className="relative w-9 h-9 rounded-full overflow-hidden border border-white/10 cursor-pointer hover:ring-2 ring-white/20 transition-all flex-shrink-0" />
+                  }
+                >
+                  <Image
+                    src={session.user.image || "/default-avatar.png"}
+                    alt="User avatar"
+                    sizes="36px"
+                    fill
+                    className="object-cover pointer-events-none"
+                  />
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  className="w-60 bg-[#0d0724] border border-white/10 p-2 rounded-xl text-white shadow-2xl"
+                  align="end"
+                  sideOffset={8}
+                >
+                  {/* User Info */}
+                  <div className="px-2 py-3">
+                    <p className="text-sm font-semibold truncate">{session.user.name}</p>
+                    <p className="text-xs text-gray-400 truncate">{session.user.email}</p>
+                    <span className="inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#6344f5]/20 text-[#6344f5] uppercase tracking-wider">
+                      {session.user.role || "User"}
+                    </span>
+                  </div>
+
+                  <DropdownMenuSeparator className="bg-white/10" />
+
+                  <div className="py-1">
+                    <DropdownMenuItem
+                      render={<Link href="/dashboard" />}
+                      className="flex items-center gap-3 text-sm font-medium cursor-pointer rounded-lg px-2 py-2"
+                    >
+                      <LayoutDashboard className="h-4 w-4 text-gray-400" />
+                      <span>Dashboard</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      render={<Link href="/profile" />}
+                      className="flex items-center gap-3 text-sm font-medium cursor-pointer rounded-lg px-2 py-2"
+                    >
+                      <User className="h-4 w-4 text-gray-400" />
+                      <span>Profile</span>
+                    </DropdownMenuItem>
+                  </div>
+
+                  <DropdownMenuSeparator className="bg-white/10" />
+
+                  <div className="py-1">
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="flex items-center gap-3 text-sm font-medium cursor-pointer rounded-lg px-2 py-2 text-red-400"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center gap-4">
+                <Link href="/login" className="text-sm text-gray-300 hover:text-white transition-colors">
+                  Login
+                </Link>
+                <Link href="/signup" className="text-sm bg-[#6344f5] hover:bg-[#5032e6] px-6 py-2.5 rounded-lg text-white transition-colors">
+                  Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
+
         </div>
-      )}
+      </div>
     </nav>
   );
 }

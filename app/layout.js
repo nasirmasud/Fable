@@ -2,6 +2,7 @@ import Footer from "@/components/pageContent/Footer";
 import Navbar from "@/components/pageContent/Navbar";
 import { ThemeProvider } from "@/components/tools/ThemeProvider";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -23,9 +24,15 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <body className='min-h-full flex flex-col'>
-        <ThemeProvider>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='dark'
+          enableSystem={false}
+          disableTransitionOnChange
+        >
           <Navbar />
           {children}
+          <Toaster richColors position='bottom-center' />
           <Footer />
         </ThemeProvider>
       </body>

@@ -74,7 +74,7 @@ export default function ReadersFeedback() {
                     src={item.avatar}
                     alt={item.name}
                     fill
-                    sizes="(max-width: 768px) 48px, 48px"
+                    sizes="100px"
                     className="object-cover"
                   />
                 </div>
