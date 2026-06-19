@@ -28,7 +28,7 @@ export default function HeroCarousel() {
         className="object-cover object-center"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-r from-[#07020f] via-[#07020f]/75 to-[#07020f]/10 md:to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-r from-[#07020f] via-[#07020f]/75 to-[#07020f]/10 md:to-transparent" />
       <div className="absolute inset-0 bg-[#07020f]/45 md:bg-transparent" />
 
       <div className="relative z-10 ml-0 flex h-full max-w-7xl flex-col justify-center px-6 py-12 sm:px-8 lg:px-40">
@@ -52,7 +52,7 @@ export default function HeroCarousel() {
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link
               href="/ebooks"
-              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-500 px-6 py-3 font-semibold text-white shadow-lg shadow-purple-900/40 transition hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-violet-600 to-purple-500 px-6 py-3 font-semibold text-white shadow-lg shadow-purple-900/40 transition hover:opacity-90"
             >
               Browse Ebooks
               <ArrowRight className="h-4 w-4" />

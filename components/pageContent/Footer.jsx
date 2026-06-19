@@ -15,17 +15,13 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    // মেইন ফুটার কন্টেইনার (কোনো absolute ঝামেলা ছাড়া ক্লিন রিচ ডার্ক ব্যাকগ্রাউন্ড)
     <footer className="w-full bg-[#060213] text-gray-300 pt-16 pb-6 px-6 md:px-10 lg:px-16 font-sans border-t border-white/5 relative">
       <div className="w-full mx-auto">
 
-        {/* 🗂️ ক্লিন গ্রিড লেআউট: পিসিতে একদম সমান্তরাল ৫টি কলাম (Grid Columns 5) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 lg:gap-6 pb-12 border-b border-white/10">
 
-          {/* কলাম ১: ব্র্যান্ড ইনফো ও সোশ্যাল আইকন */}
           <div className="flex flex-col items-start gap-5">
             <Link href="/" className="flex items-center gap-2">
-              {/* এখানে logo.png টি ব্যবহার করা হয়েছে */}
               <Image
                 src="/logo.png"
                 alt="Fable Logo"
@@ -61,7 +57,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* কলাম ২: Quick Links */}
           <div className="lg:pl-4">
             <h4 className="text-white font-bold text-[15px] mb-4 tracking-wide">Quick Links</h4>
             <ul className="space-y-2.5 text-sm">
@@ -75,7 +70,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* কলাম ৩: For Writers */}
           <div>
             <h4 className="text-white font-bold text-[15px] mb-4 tracking-wide">For Writers</h4>
             <ul className="space-y-2.5 text-sm">
@@ -89,7 +83,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* কলাম ৪: Support */}
           <div>
             <h4 className="text-white font-bold text-[15px] mb-4 tracking-wide">Support</h4>
             <ul className="space-y-2.5 text-sm">
@@ -103,7 +96,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* কলাম ৫: Newsletter (এবার গ্রিডের ভেতর ৫ম কলাম হিসেবে একদম পারফেক্ট পজিশনে বসবে) */}
           <div className="flex flex-col gap-3.5">
             <h4 className="text-white font-bold text-[15px] tracking-wide">Newsletter</h4>
             <p className="text-sm text-gray-400 leading-relaxed">
@@ -117,7 +109,7 @@ export default function Footer() {
               />
               <button
                 type="submit"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 bg-gradient-to-r from-[#6344f5] to-[#8a3ffc] hover:from-[#5032e6] hover:to-[#7c32eb] text-white rounded-lg flex items-center justify-center shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 bg-linear-to-r from-[#6344f5] to-[#8a3ffc] hover:from-[#5032e6] hover:to-[#7c32eb] text-white rounded-lg flex items-center justify-center shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 <Send size={13} className="transform -rotate-12" />
               </button>
@@ -126,7 +118,6 @@ export default function Footer() {
 
         </div>
 
-        {/* 📝 নিচের কপিরাইট ও ক্রেডিট সেকশন */}
         <div className="mt-8 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-medium">
           <p>© {currentYear} Fable. All rights reserved.</p>
           <p className="flex items-center gap-1">
