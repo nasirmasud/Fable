@@ -3,6 +3,7 @@
 import { Send } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   FaFacebookF,
   FaInstagram,
@@ -12,6 +13,11 @@ import {
 } from "react-icons/fa6";
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname.includes('dashboard')) {
+    return null
+  }
+
   const currentYear = new Date().getFullYear();
 
   return (

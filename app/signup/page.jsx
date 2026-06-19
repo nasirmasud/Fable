@@ -22,7 +22,7 @@ export default function SignUpPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm({
-    defaultValues: { name: "", email: "", password: "", confirmPassword: "", role: "Reader" },
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "", role: "reader" },
   });
 
   const handleImageUpload = async (e) => {
@@ -128,7 +128,7 @@ export default function SignUpPage() {
 
             <FormField control={form.control} name="role" render={({ field }) => (
               <div className="flex gap-6 py-2">
-                {["Reader", "Writer"].map((role) => (
+                {["reader", "writer"].map((role) => (
                   <div key={role} className="flex items-center space-x-2">
                     <Checkbox checked={field.value === role} onCheckedChange={() => field.onChange(role)} className="data-[state=checked]:bg-[#6344f5] border-gray-500" />
                     <label className="text-gray-300 text-sm cursor-pointer" onClick={() => field.onChange(role)}>{role}</label>

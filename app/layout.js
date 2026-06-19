@@ -12,7 +12,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: "Fable - Discover & Read Ebooks",
+  title: "Fable | Discover & Read Ebooks",
   description: "A premium platform for ebook lovers",
 };
 
@@ -28,7 +28,6 @@ export default function RootLayout({ children }) {
           attribute='class'
           defaultTheme='dark'
           enableSystem={false}
-          disableTransitionOnChange
         >
           <Navbar />
           {children}

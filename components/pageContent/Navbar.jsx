@@ -14,16 +14,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "Browse Ebooks", href: "/browse" },
-  { name: "Dashboard", href: "/dashboard" },
-];
 
 export default function Navbar() {
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
   const { data: session } = authClient.useSession();
+  const userRole = session?.user?.role;
+
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Browse Ebooks", href: "/browse" },
+    { name: "Dashboard", href: `/dashboard/${userRole}` },
+  ];
+
+  if (pathname.includes('dashboard')) {
+    return null
+  }
 
   const handleLogout = async () => {
     await authClient.signOut();
