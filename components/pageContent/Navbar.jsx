@@ -83,7 +83,7 @@ export default function Navbar() {
                 <DropdownMenuTrigger
                   nativeButton={false}
                   render={
-                    <div className="relative w-9 h-9 rounded-full overflow-hidden border border-white/10 cursor-pointer hover:ring-2 ring-white/20 transition-all flex-shrink-0" />
+                    <div className="relative w-9 h-9 rounded-full overflow-hidden border border-white/10 cursor-pointer hover:ring-2 ring-white/20 transition-all shrink-0" />
                   }
                 >
                   <Image

@@ -94,7 +94,7 @@ function SidebarUser({ session }) {
     <div className="border-t border-white/10 p-4 bg-white/2">
       <div className="flex items-center gap-3">
         <div className="relative w-11 h-11 rounded-full overflow-hidden border border-white/10">
-          <Image src={session.user.image || "/default-avatar.png"} alt={session.user.name || "User"} fill className="object-cover" />
+          <Image src={session.user.image || "/default-avatar.png"} alt={session.user.name || "User"} fill className="object-cover" sizes="48px" />
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-white truncate">{session.user.name}</p>
