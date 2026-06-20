@@ -170,6 +170,7 @@ export default function AddBookPage() {
       tags,
       description,
       content,
+      writerEmail: session?.user?.email,
     };
 
     const res = await addEbook(submitData)
@@ -204,24 +205,50 @@ export default function AddBookPage() {
         <span className="text-white font-medium">Add New Ebook</span>
       </div>
 
-      {/* Hero Banner */}
       <div
-        className="mx-6 mt-3 mb-6 rounded-2xl px-8 py-7 flex items-center justify-between overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a0a3d 0%, #2d1065 50%, #3d1580 100%)" }}
+        className="mx-6 mt-3 mb-6 rounded-2xl px-8 py-8 flex items-center justify-between overflow-hidden relative"
+        style={{ background: "linear-gradient(135deg, #1a0a3d 0%, #2d1065 55%, #3d1580 100%)" }}
       >
-        <div>
+        {/* sparkles */}
+        {[
+          { top: "20%", left: "55%" },
+          { top: "15%", left: "68%" },
+          { top: "55%", left: "74%" },
+          { top: "20%", left: "82%" },
+          { top: "40%", left: "90%" },
+        ].map((s, i) => (
+          <span
+            key={i}
+            className="absolute text-purple-300/50 text-lg pointer-events-none select-none"
+            style={{ top: s.top, left: s.left }}
+          >
+            ✦
+          </span>
+        ))}
+
+        {/* Left text */}
+        <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-9 h-9 rounded-lg bg-purple-500/30 flex items-center justify-center">
               <BookOpen size={18} className="text-purple-300" />
             </div>
             <h1 className="text-2xl font-bold">Add New Ebook</h1>
           </div>
-          <p className="text-purple-200/70 text-sm">
+          <p className="text-purple-200/70 text-sm leading-relaxed">
             Share your imagination with readers around the world.<br />
             Fill in the details below to publish your ebook.
           </p>
         </div>
-        <BookOpen size={64} className="text-purple-400/20 hidden md:block" />
+
+        {/* Right decorative book stack */}
+        <div className="hidden md:block relative w-32 h-28 shrink-0 mr-8">
+          {/* back book */}
+          <div className="absolute right-0 top-2 w-20 h-24 rounded-xl bg-linear-to-br from-purple-600 to-purple-900 border border-purple-400/20 rotate-6 shadow-xl" />
+          {/* front book */}
+          <div className="absolute right-4 top-0 w-20 h-24 rounded-xl bg-linear-to-br from-purple-500 to-indigo-700 border border-purple-300/20 -rotate-3 shadow-xl flex items-center justify-center">
+            <BookOpen size={28} className="text-purple-200/50" />
+          </div>
+        </div>
       </div>
 
       {/* Content */}
