@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaBook, FaBookmark, FaChartLine, FaHistory, FaMoneyBill, FaUser, FaUsers } from "react-icons/fa";
+import { FaBook, FaBookmark, FaChartLine, FaHistory, FaMoneyBill, FaUsers } from "react-icons/fa";
 
 const DashboardItems = {
   reader: [
@@ -14,7 +14,6 @@ const DashboardItems = {
     { icon: FaBook, label: "Purchased Ebooks", link: "/dashboard/reader/purchased-ebooks" },
     { icon: FaHistory, label: "Purchase History", link: "/dashboard/reader/purchase-history" },
     { icon: FaBookmark, label: "My Bookmarks", link: "/dashboard/reader/bookmarks" },
-    { icon: FaUser, label: "Profile", link: "/dashboard/reader/profile" },
   ],
   writer: [
     { icon: FaChartLine, label: "Dashboard", link: "/dashboard/writer" },

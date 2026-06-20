@@ -1,6 +1,11 @@
-const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+"use server";
+
+import { serverFetch } from "../core/server";
+
+export const getAllEbooks = async () => {
+  return serverFetch('/api/ebooks')
+}
 
 export const getWritersEbooks = async (writerEmail, status = 'draft') => {
-  const res = await fetch(`${baseURL}/api/ebooks?writerEmail=${writerEmail}&status=${status}`);
-  return res.json()
-}
+  return await serverFetch(`/api/ebooks?writerEmail=${writerEmail}&status=${status}`);
+};

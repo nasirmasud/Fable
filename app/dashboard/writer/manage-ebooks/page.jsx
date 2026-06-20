@@ -242,7 +242,7 @@ export default async function WritersEbooks() {
 
               {/* Price */}
               <div className="text-sm font-semibold text-white">
-                {book.status === "published" ? `$${Number(book.price).toFixed(2)}` : "—"}
+                {book.price ? `$${Number(book.price).toFixed(2)}` : "—"}
               </div>
 
               {/* Sales */}
