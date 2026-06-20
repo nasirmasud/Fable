@@ -13,18 +13,19 @@ import {
   Italic,
   Link,
   List, ListOrdered,
+  Loader2,
   Quote,
   Redo,
-  Save,
   Send,
   Strikethrough,
   Tag,
   Underline,
   Undo,
-  Upload, X,
+  Upload, X
 } from "lucide-react";
 import NextImage from "next/image";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,9 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { addEbook } from "@/lib/actions/ebooks";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 
 const GENRES = [
@@ -82,9 +86,14 @@ const TOOLBAR_GROUPS = [
   ],
 ];
 
+
 export default function AddBookPage() {
+  const { data: session, isPending } = authClient.useSession();
+  const role = session?.user?.name;
+  const router = useRouter();
   const [coverPreview, setCoverPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [language, setLanguage] = useState("");
@@ -98,18 +107,90 @@ export default function AddBookPage() {
   const [content, setContent] = useState("");
   const fileInputRef = useRef(null);
 
-  const processImage = (file) => {
+  const processImage = async (file) => {
     if (!file || !file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = (e) => setCoverPreview(e.target.result);
-    reader.readAsDataURL(file);
+
+    setIsUploading(true);
+    const imageFormData = new FormData();
+    imageFormData.append("image", file);
+
+    try {
+      const response = await fetch(
+        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API}`,
+        { method: "POST", body: imageFormData }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setCoverPreview(data.data.url);
+        toast.success("Cover image uploaded!");
+      } else {
+        toast.error("Upload failed!");
+      }
+    } catch (err) {
+      toast.error("Network error!");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleTagKeyDown = (e) => {
     if (e.key === "Enter" && tagInput.trim()) {
       e.preventDefault();
+      e.stopPropagation();
       if (!tags.includes(tagInput.trim())) setTags([...tags, tagInput.trim()]);
       setTagInput("");
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault()
+
+    const errors = [];
+    if (!coverPreview) errors.push("Cover Image");
+    if (!title.trim()) errors.push("Book Title");
+    if (!genre) errors.push("Genre");
+    if (!price) errors.push("Price");
+    if (!description.trim()) errors.push("Short Description");
+    if (!content.trim()) errors.push("Full Ebook Content");
+
+    if (errors.length > 0) {
+      toast.error(`Please fill in: ${errors.join(", ")}`);
+      return;
+    }
+
+    const submitData = {
+      coverPreview,
+      title,
+      genre,
+      language,
+      price: parseFloat(price),
+      pages: pages ? parseInt(pages) : null,
+      readingTime,
+      status,
+      tags,
+      description,
+      content,
+    };
+
+    const res = await addEbook(submitData)
+    if (res?.insertedId) {
+      toast.success("Ebook Added Successfully");
+      // manually reset all states
+      setTitle("");
+      setGenre("");
+      setLanguage("");
+      setPrice("");
+      setPages("");
+      setReadingTime("");
+      setStatus("draft");
+      setTags([]);
+      setDescription("");
+      setContent("");
+      setCoverPreview(null);
+
+      router.push("/dashboard/writer");
+    } else {
+      toast.error("Something went wrong!");
     }
   };
 
@@ -119,8 +200,6 @@ export default function AddBookPage() {
       {/* Breadcrumb */}
       <div className="px-6 pt-6 pb-2 text-sm text-gray-400 flex items-center gap-2">
         <span className="hover:text-purple-400 cursor-pointer transition-colors">Dashboard</span>
-        <span className="text-gray-600">›</span>
-        <span className="hover:text-purple-400 cursor-pointer transition-colors">Manage Ebooks</span>
         <span className="text-gray-600">›</span>
         <span className="text-white font-medium">Add New Ebook</span>
       </div>
@@ -165,28 +244,35 @@ export default function AddBookPage() {
                     onDrop={(e) => { e.preventDefault(); setIsDragging(false); processImage(e.dataTransfer.files[0]); }}
                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                     onDragLeave={() => setIsDragging(false)}
-                    className={`relative border-2 border-dashed rounded-xl transition-all ${isDragging ? "border-purple-400 bg-purple-500/10" : "border-white/10 hover:border-purple-500/40"
-                      }`}
+                    className={`relative border-2 border-dashed rounded-xl transition-all ${isDragging ? "border-purple-400 bg-purple-500/10" : "border-white/10 hover:border-purple-500/40"}`}
                   >
                     {!coverPreview ? (
                       <div className="py-28 px-4 text-center">
                         <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mx-auto mb-3">
-                          <Upload size={20} className="text-purple-400" />
+                          {isUploading
+                            ? <Loader2 size={20} className="text-purple-400 animate-spin" />
+                            : <Upload size={20} className="text-purple-400" />
+                          }
                         </div>
-                        <p className="text-sm text-gray-400 mb-1">Drag & drop your image here</p>
+                        <p className="text-sm text-gray-400 mb-1">
+                          {isUploading ? "Uploading..." : "Drag & drop your image here"}
+                        </p>
                         <p className="text-xs text-gray-600 mb-3">or</p>
                         <Button
                           variant="link"
                           className="text-purple-400 p-0 h-auto text-sm"
                           onClick={() => fileInputRef.current?.click()}
+                          disabled={isUploading}
                         >
-                          click to browse
+                          {isUploading ? "Please wait..." : "click to browse"}
                         </Button>
                         <p className="text-xs text-gray-600 mt-3">Supports: JPG, PNG, WEBP · Max 5MB</p>
                       </div>
                     ) : (
                       <div className="relative">
-                        <div className="relative w-full rounded-xl overflow-hidden" style={{ height: "260px" }}><NextImage src={coverPreview} alt="Cover" fill className="object-cover rounded-xl" unoptimized /></div>
+                        <div className="relative w-full rounded-xl overflow-hidden" style={{ height: "380px" }}>
+                          <NextImage src={coverPreview} alt="Cover" fill className="object-cover rounded-xl" unoptimized />
+                        </div>
                         <Button
                           size="icon"
                           variant="ghost"
@@ -197,7 +283,13 @@ export default function AddBookPage() {
                         </Button>
                       </div>
                     )}
-                    <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => processImage(e.target.files[0])} />
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => processImage(e.target.files[0])}
+                    />
                   </div>
 
                   {coverPreview && (
@@ -206,6 +298,7 @@ export default function AddBookPage() {
                       size="sm"
                       className="mt-3 w-full border-white/10 bg-transparent text-gray-300 hover:bg-white/5 hover:text-white"
                       onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
                     >
                       <ImageIcon size={13} className="mr-2" /> Change Image
                     </Button>
@@ -432,20 +525,13 @@ export default function AddBookPage() {
             </CardContent>
           </Card>
 
-          {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Action Button */}
+          <div>
             <Button
-              variant="outline"
+              onClick={handleFormSubmit}
               size="lg"
-              className="border-white/15 bg-white/5 hover:bg-white/10 text-white rounded-xl font-semibold"
-            >
-              <Save size={16} className="mr-2" />
-              Save Draft
-            </Button>
-            <Button
-              size="lg"
-              className="rounded-xl font-semibold text-white"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #9333ea)" }}
+              className="rounded-xl font-semibold text-white w-full"
+              style={{ background: "linear-gradient(135deg, #1a0a3d 0%, #2d1065 50%, #3d1580 100%)" }}
             >
               <Send size={16} className="mr-2" />
               Publish Ebook
@@ -465,16 +551,21 @@ export default function AddBookPage() {
             </CardHeader>
             <CardContent className="px-5 pb-5">
               {/* Cover */}
-              <div className="rounded-xl overflow-hidden mb-4 aspect-[3/4] bg-gradient-to-br from-[#1a0a3d] to-[#2d1065] flex items-center justify-center">
-                {coverPreview ? (
+              <div className="rounded-xl overflow-hidden mb-4 aspect-3/4 bg-linear-to-br from-[#1a0a3d] to-[#2d1065] flex items-center justify-center relative">
+                {isUploading ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <Loader2 size={28} className="text-purple-400 animate-spin" />
+                    <p className="text-xs text-purple-300">Uploading...</p>
+                  </div>
+                ) : coverPreview ? (
                   <NextImage src={coverPreview} alt="Preview" fill className="object-cover" unoptimized />
                 ) : (
                   <BookOpen size={36} className="text-purple-300/30" />
                 )}
               </div>
 
-              <h3 className="text-base font-bold text-white mb-1">{title || "The Lost Kingdom"}</h3>
-              <p className="text-sm text-purple-400 mb-3">by James Arlen</p>
+              <h3 className="text-base font-bold text-white mb-1">{title || ""}</h3>
+              <p className="text-sm text-purple-400 mb-3">by {role?.toUpperCase()}</p>
 
               <div className="flex items-center gap-2 mb-3 flex-wrap">
                 {genre && (
