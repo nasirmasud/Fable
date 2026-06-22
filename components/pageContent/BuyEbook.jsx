@@ -208,6 +208,8 @@ const BuyEbookPage = ({ ebook, user }) => {
                       src={ebook.coverPreview}
                       alt={ebook.title}
                       fill
+                      priority
+                      sizes="(max-width: 1024px) 100vw, 384px"
                       className="object-cover"
                     />
                   ) : (

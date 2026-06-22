@@ -2,6 +2,7 @@
 
 import { Mail } from "lucide-react";
 import { useState } from "react";
+import FloatingParticles from "../tools/FloatingParticles";
 
 export default function SubscribeBanner() {
   const [email, setEmail] = useState("");
@@ -15,7 +16,8 @@ export default function SubscribeBanner() {
   };
 
   return (
-    <section className="w-full bg-white dark:bg-[#070314] pt-16 px-6 md:px-10 lg:px-16 font-sans transition-colors duration-300">
+    <section className="relative overflow-hidden w-full bg-white dark:bg-[#070314] pt-16 px-6 md:px-10 lg:px-16 font-sans transition-colors duration-300">
+      <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
       <div className="w-full mx-auto">
 
         <div className="w-full bg-[#0b061f] dark:bg-[#090518] rounded-t-3xl rounded-b-none p-6 md:p-8 lg:p-10 shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative overflow-hidden">

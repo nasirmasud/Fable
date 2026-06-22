@@ -1,6 +1,7 @@
 "use client";
 
 import { BookOpen, DollarSign, PenTool, Users } from "lucide-react";
+import FloatingParticles from "../tools/FloatingParticles";
 
 export default function StatsBanner() {
   const stats = [
@@ -31,7 +32,8 @@ export default function StatsBanner() {
   ];
 
   return (
-    <section className="w-full bg-white dark:bg-[#070314] py-32 px-6 md:px-10 lg:px-16 font-sans transition-colors duration-300">
+    <section className="relative overflow-hidden w-full bg-white dark:bg-[#070314] py-32 px-6 md:px-10 lg:px-16 font-sans transition-colors duration-300">
+      <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
       <div className="w-full mx-auto">
 
         <div className="relative w-full bg-linear-to-r from-[#5032e6] via-[#6344f5] to-[#8a3ffc] rounded-3xl p-8 md:p-10 lg:p-12 shadow-xl shadow-purple-500/10 overflow-hidden group">

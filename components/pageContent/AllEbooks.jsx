@@ -24,6 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import FloatingParticles from "../tools/FloatingParticles";
 
 const SORT_OPTIONS = ["Popular", "Newest", "Price: Low to High", "Price: High to Low", "Rating"];
 const PER_PAGE = 14;
@@ -48,18 +49,21 @@ function formatPrice(price) {
 
 // ── Book Card ─────────────────────────────────────────────────────────────────
 
-export function BookCard({ book }) {
+export function BookCard({ book, priority = false }) {
   return (
     <Link
       href={`/all-books/${book._id}`}
       className="group block relative bg-[#131428] border border-white/5 rounded overflow-hidden cursor-pointer hover:border-purple-500/40 hover:shadow-[0_0_24px_rgba(139,92,246,0.15)] transition-all duration-300"
     >
+      <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
+
       {/* Cover */}
       <div className="relative aspect-3/4 overflow-hidden">
         <Image
           src={book.coverPreview}
           alt={book.title}
           fill
+          priority={priority}
           className="object-cover group-hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 15vw"
         />
@@ -275,8 +279,8 @@ export default function AllBooksClient({ ebooks }) {
         {/* Grid */}
         {paginated.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-10">
-            {paginated.map((book) => (
-              <BookCard key={book._id} book={book} />
+            {paginated.map((book, index) => (
+              <BookCard key={book._id} book={book} priority={page === 1 && index < 2} />
             ))}
           </div>
         ) : (

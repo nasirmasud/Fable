@@ -11,6 +11,7 @@ import {
   FaXTwitter,
   FaYoutube
 } from "react-icons/fa6";
+import FloatingParticles from "../tools/FloatingParticles";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -21,7 +22,8 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-[#060213] text-gray-300 pt-16 pb-6 px-6 md:px-10 lg:px-16 font-sans border-t border-white/5 relative">
+    <footer className="relative overflow-hidden w-full bg-[#060213] text-gray-300 pt-16 pb-6 px-6 md:px-10 lg:px-16 font-sans border-t border-white/5">
+      <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
       <div className="w-full mx-auto">
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 lg:gap-6 pb-12 border-b border-white/10">

@@ -176,6 +176,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import FloatingParticles from "../tools/FloatingParticles";
 
 
 export default function Navbar() {
@@ -215,7 +216,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-[#070314] text-white border-b border-white/5 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
+    <nav className="overflow-hidden w-full bg-[#070314] text-white border-b border-white/5 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
+      <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
       <div className="w-full px-6 md:px-10 lg:px-16 mx-auto">
         <div className="flex items-center justify-between h-20">
 

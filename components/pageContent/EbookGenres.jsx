@@ -12,6 +12,7 @@ import {
   Wand2
 } from "lucide-react";
 import Link from "next/link";
+import FloatingParticles from "../tools/FloatingParticles";
 
 export default function EbookGenres() {
   const genres = [
@@ -90,7 +91,8 @@ export default function EbookGenres() {
   ];
 
   return (
-    <section className="w-full bg-white dark:bg-[#070314] py-16 px-6 md:px-10 lg:px-16 font-sans transition-colors duration-300">
+    <section className="relative overflow-hidden w-full bg-white dark:bg-[#070314] py-16 px-6 md:px-10 lg:px-16 font-sans transition-colors duration-300">
+      <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
       <div className="w-full mx-auto">
 
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">

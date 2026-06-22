@@ -1,6 +1,6 @@
+import SuccessPage from '@/components/pageContent/SussessPage'
+import { stripe } from "@/lib/stripe"
 import { redirect } from 'next/navigation'
-
-import { stripe } from "@/lib/stripe";
 
 export default async function Success({ searchParams }) {
   const { session_id } = await searchParams
@@ -20,14 +20,6 @@ export default async function Success({ searchParams }) {
   }
 
   if (status === 'complete') {
-    return (
-      <section id="success">
-        <p>
-          We appreciate your business! A confirmation email will be sent to{' '}
-          {customerEmail}. If you have any questions, please email{' '}
-          <a href="mailto:orders@example.com">orders@example.com</a>.
-        </p>
-      </section>
-    )
+    return <SuccessPage customerEmail={customerEmail} />
   }
 }
