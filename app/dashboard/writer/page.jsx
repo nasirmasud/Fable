@@ -1,10 +1,5 @@
+import WriterDashboardPage from "@/components/pageContent/WriterDashboard";
 
-const WriterDashboard = () => {
-  return (
-    <div>
-      Writer Dashboard Page
-    </div>
-  )
+export default function Page() {
+  return <WriterDashboardPage />;
 }
-
-export default WriterDashboard

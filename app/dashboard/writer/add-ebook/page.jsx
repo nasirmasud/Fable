@@ -120,6 +120,8 @@ export default function AddBookPage() {
         { method: "POST", body: imageFormData }
       );
       const data = await response.json();
+      console.log("ImgBB Response:", data);
+
       if (data.success) {
         setCoverPreview(data.data.url);
         toast.success("Cover image uploaded!");

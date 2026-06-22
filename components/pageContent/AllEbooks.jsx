@@ -22,6 +22,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
 
 const SORT_OPTIONS = ["Popular", "Newest", "Price: Low to High", "Price: High to Low", "Rating"];
 const PER_PAGE = 14;
@@ -46,19 +48,24 @@ function formatPrice(price) {
 
 // ── Book Card ─────────────────────────────────────────────────────────────────
 
-function BookCard({ book }) {
+export function BookCard({ book }) {
   return (
-    <div className="group relative bg-[#131428] border border-white/5 rounded overflow-hidden cursor-pointer hover:border-purple-500/40 hover:shadow-[0_0_24px_rgba(139,92,246,0.15)] transition-all duration-300">
+    <Link
+      href={`/all-books/${book._id}`}
+      className="group block relative bg-[#131428] border border-white/5 rounded overflow-hidden cursor-pointer hover:border-purple-500/40 hover:shadow-[0_0_24px_rgba(139,92,246,0.15)] transition-all duration-300"
+    >
       {/* Cover */}
-      <div className="relative aspect-[3/4] overflow-hidden">
-        <img
+      <div className="relative aspect-3/4 overflow-hidden">
+        <Image
           src={book.coverPreview}
           alt={book.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 15vw"
         />
         {/* Genre badge */}
         {book.genre && (
-          <Badge className="absolute top-2 left-2 bg-purple-600/80 hover:bg-purple-600/80 text-purple-100 text-[10px] uppercase tracking-wide backdrop-blur-sm border-0 px-2 py-0.5">
+          <Badge className="absolute top-2 left-2 bg-purple-600/80 hover:bg-purple-600/80 text-purple-100 text-[10px] uppercase tracking-wide backdrop-blur-sm border-0 px-2 py-0.5 z-10">
             {book.genre}
           </Badge>
         )}
@@ -82,7 +89,7 @@ function BookCard({ book }) {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
