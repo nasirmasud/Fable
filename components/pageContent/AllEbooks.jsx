@@ -101,7 +101,7 @@ export default function AllBooksClient({ ebooks }) {
   const [sort, setSort] = useState("Popular");
   const [page, setPage] = useState(1);
 
-  // Genre list — API থেকে আসা unique genre গুলো
+  // Genre list — unique genres fetch from API
   const genres = useMemo(() => {
     const unique = Array.from(
       new Set((ebooks ?? []).map((b) => b.genre).filter(Boolean))
@@ -168,16 +168,19 @@ export default function AllBooksClient({ ebooks }) {
       <section className="relative overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src="/all-book-cover.png"
             alt="Hero background"
-            className="w-full h-full object-cover object-center opacity-60"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center opacity-60"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0b0c1e] via-[#0b0c1ecc] to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0b0c1e] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-r from-[#0b0c1e] via-[#0b0c1ecc] to-transparent" />
+          <div className="absolute inset-0 bg-line-to-t from-[#0b0c1e] via-transparent to-transparent" />
         </div>
 
-        <div className="relative z-10 w-full px-8 sm:px-12 lg:px-20 pt-16 pb-24 min-h-[650px] flex flex-col justify-center">
+        <div className="relative z-10 w-full px-8 sm:px-12 lg:px-20 pt-16 pb-24 min—h—162.5 flex flex-col justify-center">
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3 leading-relaxed">
             All Books
           </h1>
@@ -188,7 +191,7 @@ export default function AllBooksClient({ ebooks }) {
 
           {/* Search + Filter */}
           <div className="flex flex-wrap gap-3 mb-8">
-            <div className="relative flex-1 min-w-[240px] max-w-sm">
+            <div className="relative flex-1 min-w-60 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 z-10" />
               <Input
                 type="text"

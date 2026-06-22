@@ -461,6 +461,7 @@ import {
   Users,
 } from "lucide-react";
 import Image from "next/image"; // ── ১. Next.js Image কম্পোনেন্ট ইম্পোর্ট করা হয়েছে ──
+import Link from "next/link";
 import { useState } from "react";
 import { BookCard } from "./AllEbooks";
 
@@ -493,7 +494,7 @@ const SIMILAR_BOOKS = [
     author: "James Clear",
     rating: 4.6,
     price: 4.99,
-    cover: "https://i.ibb.co.com/ns3YRtPg/41fh3-WWECQL-SY445-SX342-FMwebp.webp",
+    cover: "https://i.ibb.co.com/yB6G9hsD/71-Zp31d-Fe-UL-SY466.jpg",
   },
   {
     id: 2,
@@ -517,7 +518,7 @@ const SIMILAR_BOOKS = [
     author: "Cal Newport",
     rating: 4.4,
     price: 3.49,
-    cover: "https://i.ibb.co.com/1t2v0hGj/71k-TOIq-VP-L-SY522.jpg",
+    cover: "https://i.ibb.co.com/7J9X1Lr8/81nr-Vzhh-Yp-L-SY466.jpg",
   },
 ];
 
@@ -544,7 +545,7 @@ const MOCK_REVIEWS = [
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 
-export default function BookDetailsPage({ book }) {
+export default function BookDetailsPage({ book, id }) {
   const [bookmarked, setBookmarked] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
 
@@ -663,10 +664,12 @@ export default function BookDetailsPage({ book }) {
 
                 {/* CTAs */}
                 <div className="flex flex-wrap gap-3">
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white px-6 gap-2">
-                    <BookOpen size={16} />
-                    Read Now
-                  </Button>
+                  <Link href={`/all-books/${id}/read-more`} >
+                    <Button className="bg-purple-600 hover:bg-purple-700 text-white px-6 gap-2">
+                      <BookOpen size={16} />
+                      Read Now
+                    </Button>
+                  </Link>
                   <Button
                     variant="outline"
                     className="border-white/20 text-white hover:bg-white/10 gap-2"
@@ -762,10 +765,12 @@ export default function BookDetailsPage({ book }) {
                       <Lock size={14} />
                       Continue reading after purchase
                     </span>
-                    <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2 text-sm px-4">
-                      <BookOpen size={14} />
-                      Buy Now
-                    </Button>
+                    <Link href={`/all-books/${id}/read-more`} >
+                      <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2 text-sm px-4">
+                        <BookOpen size={14} />
+                        Buy Now
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -813,42 +818,6 @@ export default function BookDetailsPage({ book }) {
           <aside className="w-full lg:w-[360px] xl:w-[420px] 2xl:w-[480px] flex-shrink-0 space-y-8">
 
             {/* Similar Books */}
-            {/* <section>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">Similar Books</h2>
-                <button className="text-purple-400 text-sm flex items-center gap-1 hover:text-purple-300 transition-colors">
-                  View All <ChevronRight size={14} />
-                </button>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                {SIMILAR_BOOKS.map((b) => (
-                  <Card
-                    key={b.id}
-                    className="bg-[#13132b] border-white/10 text-white overflow-hidden hover:border-purple-500/40 transition-colors cursor-pointer group"
-                  >
-                    <div className="h-32 overflow-hidden relative">
-                      <Image
-                        src={b.cover}
-                        alt={b.title}
-                        fill
-                        sizes="(max-width: 768px) 50vw, 200px"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <CardContent className="p-3 space-y-1">
-                      <p className="font-semibold text-sm truncate">{b.title}</p>
-                      <p className="text-xs text-gray-400 truncate">{b.author}</p>
-                      <div className="flex items-center justify-between pt-1">
-                        <span className="flex items-center gap-0.5 text-xs text-yellow-400">
-                          <Star size={12} className="fill-yellow-400" /> {b.rating}
-                        </span>
-                        <span className="text-purple-400 text-sm font-semibold">${b.price}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section> */}
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Similar Books</h2>

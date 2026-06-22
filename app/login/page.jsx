@@ -1,7 +1,7 @@
 "use client";
 
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -15,6 +15,9 @@ export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirect") || "/"
 
   const form = useForm({
     defaultValues: { email: "", password: "" },
@@ -44,7 +47,7 @@ export default function LoginPage() {
       toast.error(error.message || "Login failed!");
     } else {
       toast.success("Logged in successfully!");
-      router.push("/");
+      router.push(redirectTo);
     }
   }
 
@@ -110,7 +113,7 @@ export default function LoginPage() {
         </Form>
 
         <p className="text-center text-gray-400 text-sm mt-6">
-          New to Fable? <a href="/signup" className="text-[#6344f5] hover:underline font-semibold">Create account</a>
+          New to Fable? <a href={`/signup?redirect=${redirectTo}`} className="text-[#6344f5] hover:underline font-semibold">Create account</a>
         </p>
       </div>
     </div>

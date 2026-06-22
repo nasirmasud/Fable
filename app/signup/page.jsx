@@ -2,7 +2,7 @@
 
 import { Eye, EyeOff, Loader2, User } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -20,6 +20,11 @@ export default function SignUpPage() {
   const [imageUrl, setImageUrl] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirect") || "/"
+
 
   const form = useForm({
     defaultValues: { name: "", email: "", password: "", confirmPassword: "", role: "reader" },
@@ -76,7 +81,7 @@ export default function SignUpPage() {
       toast.error(error.message || "Sign up failed!");
     } else {
       toast.success("Account created successfully!");
-      router.push("/");
+      router.push(redirectTo);
     }
   }
 
@@ -157,6 +162,9 @@ export default function SignUpPage() {
             </Button>
           </form>
         </Form>
+        <p className="text-center text-gray-400 text-sm mt-6">
+          Already a Fable User? <a href={`/login?redirect-${redirectTo}`} className="text-[#6344f5] hover:underline font-semibold">Log In</a>
+        </p>
       </div>
     </div>
   );

@@ -89,14 +89,14 @@ const TOOLBAR_GROUPS = [
 
 export default function AddBookPage() {
   const { data: session, isPending } = authClient.useSession();
-  const role = session?.user?.name;
+  const author = session?.user?.name;
   const router = useRouter();
   const [coverPreview, setCoverPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
-  const [language, setLanguage] = useState("");
+  const [language, setLanguage] = useState("English");
   const [price, setPrice] = useState("");
   const [pages, setPages] = useState("");
   const [readingTime, setReadingTime] = useState("");
@@ -173,6 +173,7 @@ export default function AddBookPage() {
       description,
       content,
       writerEmail: session?.user?.email,
+      author: session?.user?.name,
     };
 
     const res = await addEbook(submitData)
@@ -349,8 +350,8 @@ export default function AddBookPage() {
                     />
                   </div>
 
-                  {/* Genre + Language */}
-                  <div className="grid grid-cols-2 gap-3">
+                  {/* Author + Genre + Language */}
+                  {/* <div className="grid grid-cols-3 gap-3">
                     <div>
                       <Label className="text-white font-semibold mb-2 block">
                         Genre <span className="text-red-400">*</span>
@@ -366,6 +367,67 @@ export default function AddBookPage() {
                         </SelectContent>
                       </Select>
                     </div>
+                    <div>
+                      <Label className="text-white font-semibold mb-2 block">
+                        Genre <span className="text-red-400">*</span>
+                      </Label>
+                      <Select onValueChange={setGenre}>
+                        <SelectTrigger className="bg-[#0d0d1a] border-white/10 text-white focus:ring-purple-500 focus:ring-1">
+                          <SelectValue placeholder="Select genre" className="text-gray-600" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-[#1a1a35] border-white/10 text-white">
+                          {GENRES.map((g) => (
+                            <SelectItem key={g} value={g} className="focus:bg-purple-500/20 focus:text-white">{g}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-white font-semibold mb-2 block">Language</Label>
+                      <Select onValueChange={setLanguage}>
+                        <SelectTrigger className="bg-[#0d0d1a] border-white/10 text-white focus:ring-purple-500 focus:ring-1">
+                          <SelectValue placeholder="Select language" className="text-gray-600" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-[#1a1a35] border-white/10 text-white">
+                          {LANGUAGES.map((l) => (
+                            <SelectItem key={l} value={l} className="focus:bg-purple-500/20 focus:text-white">{l}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div> */}
+                  {/* Author + Genre + Language */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {/* Author (First Column) */}
+                    <div>
+                      <Label className="text-white font-semibold mb-2 block">
+                        Author Name
+                      </Label>
+                      <Input
+                        value={author || "Loading..."}
+                        disabled
+                        className="bg-[#0d0d1a]/50 border-white/10 text-gray-400 disabled:opacity-80 cursor-not-allowed cursor-default"
+                      />
+                    </div>
+
+                    {/* Genre (Second Column) */}
+                    <div>
+                      <Label className="text-white font-semibold mb-2 block">
+                        Genre <span className="text-red-400">*</span>
+                      </Label>
+                      <Select onValueChange={setGenre}>
+                        <SelectTrigger className="bg-[#0d0d1a] border-white/10 text-white focus:ring-purple-500 focus:ring-1">
+                          <SelectValue placeholder="Select genre" className="text-gray-600" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-[#1a1a35] border-white/10 text-white">
+                          {GENRES.map((g) => (
+                            <SelectItem key={g} value={g} className="focus:bg-purple-500/20 focus:text-white">{g}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Language (Third Column) */}
                     <div>
                       <Label className="text-white font-semibold mb-2 block">Language</Label>
                       <Select onValueChange={setLanguage}>
@@ -594,7 +656,7 @@ export default function AddBookPage() {
               </div>
 
               <h3 className="text-base font-bold text-white mb-1">{title || ""}</h3>
-              <p className="text-sm text-purple-400 mb-3">by {role?.toUpperCase()}</p>
+              <p className="text-sm text-purple-400 mb-3">by {author?.toUpperCase()}</p>
 
               <div className="flex items-center gap-2 mb-3 flex-wrap">
                 {genre && (
