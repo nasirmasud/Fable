@@ -26,6 +26,7 @@ import {
   Users
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const PAGE_SIZE = 8;
 
@@ -107,7 +108,6 @@ export default function ManageUsersPage({ allUsers }) {
     }))
   );
   const [pendingIds, setPendingIds] = useState(new Set());
-  const [error, setError] = useState(null);
 
   const filtered = users.filter((u) => {
     const matchSearch =
@@ -131,7 +131,6 @@ export default function ManageUsersPage({ allUsers }) {
   };
 
   const handleAction = async (type, target) => {
-    setError(null);
     setPending(target.id, true);
 
     try {
@@ -140,13 +139,17 @@ export default function ManageUsersPage({ allUsers }) {
         setUsers((prev) =>
           prev.map((u) => (u.id === target.id ? { ...u, status: newStatus } : u))
         );
+        toast.success(
+          newStatus === "Banned" ? "User banned successfully" : "User unbanned successfully"
+        );
       } else if (type === "delete") {
         await deleteUser(target.id);
         setUsers((prev) => prev.filter((u) => u.id !== target.id));
+        toast.success("User deleted successfully");
       }
     } catch (err) {
       console.error(`Failed to ${type} user ${target.id}:`, err);
-      setError("Failed to Delete Try Again");
+      toast.error(type === "delete" ? "Failed to delete user. Try again." : "Failed to update user. Try again.");
     } finally {
       setPending(target.id, false);
     }
@@ -176,13 +179,6 @@ export default function ManageUsersPage({ allUsers }) {
           <UserPlus size={15} /> Invite User
         </Button>
       </div>
-
-      {/* Error banner */}
-      {error && (
-        <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-xl px-4 py-3">
-          {error}
-        </div>
-      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">

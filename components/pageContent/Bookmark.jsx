@@ -21,6 +21,7 @@ import {
   Search,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 const PAGE_SIZE = 8;
 
@@ -102,7 +103,6 @@ export default function BookmarksPage({
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState("recent");
   const [currentPage, setCurrentPage] = useState(1);
-  const [error, setError] = useState(null);
   const [pendingId, setPendingId] = useState(null);
 
   const counts = useMemo(
@@ -151,7 +151,6 @@ export default function BookmarksPage({
   const paginated = sorted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   async function handleRemoveBookmark(bookmarkId) {
-    setError(null);
     setPendingId(bookmarkId);
 
     const previous = bookmarks;
@@ -159,9 +158,10 @@ export default function BookmarksPage({
 
     try {
       await removeBookmark(bookmarkId);
+      toast.success("Bookmark removed");
     } catch (err) {
       setBookmarks(previous);
-      setError(err.message || "Failed to remove bookmark");
+      toast.error(err.message || "Failed to remove bookmark");
     } finally {
       setPendingId(null);
     }
@@ -193,12 +193,6 @@ export default function BookmarksPage({
           />
         </div>
       </div>
-
-      {error && (
-        <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-          {error}
-        </div>
-      )}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap gap-2">

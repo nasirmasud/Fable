@@ -2,6 +2,7 @@
 
 import { Mail } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import FloatingParticles from "../tools/FloatingParticles";
 
 export default function SubscribeBanner() {
@@ -10,7 +11,7 @@ export default function SubscribeBanner() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email) {
-      alert(`Subscribed with: ${email}`);
+      toast.success("Subscribed successfully!");
       setEmail("");
     }
   };

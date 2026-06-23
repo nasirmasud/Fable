@@ -21,6 +21,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 import { BookCard } from "./AllEbooks";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -132,6 +133,16 @@ export default function BookDetailsPage({ book, id }) {
 
   const isDraft = status === "draft";
 
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied to clipboard");
+    } catch {
+      toast.error("Failed to copy link");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#0d0d1a] text-white font-sans p-10">
       {/* ── Breadcrumb ── */}
@@ -190,7 +201,7 @@ export default function BookDetailsPage({ book, id }) {
                 {/* Rating */}
                 <div className="flex items-center gap-2">
                   <StarRating value={rating} size={18} />
-                  <span className="text-yellow-400 font-semibold">{rating.toFixed(1)}</span>
+                  <span className="text-yellow-400 font-semibold">{rating?.toFixed(1)}</span>
                   <span className="text-gray-400 text-sm">(28 Reviews)</span>
                 </div>
 
@@ -232,6 +243,7 @@ export default function BookDetailsPage({ book, id }) {
                     variant="outline"
                     size="icon"
                     className="border-white/20 text-white hover:bg-white/10"
+                    onClick={handleShare}
                   >
                     <Share2 size={16} />
                   </Button>
@@ -279,7 +291,7 @@ export default function BookDetailsPage({ book, id }) {
                 {[
                   {
                     label: "Rating",
-                    value: rating.toFixed(1),
+                    value: rating?.toFixed(1),
                     icon: <Star size={16} className="fill-yellow-400 text-yellow-400" />,
                   },
                   { label: "Pages", value: pages, icon: <FileText size={16} className="text-purple-400" /> },

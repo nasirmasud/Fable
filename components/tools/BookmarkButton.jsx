@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth-client";
 import { Bookmark } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function BookmarkButton({ book, bookId }) {
   const router = useRouter();
@@ -49,6 +50,7 @@ export default function BookmarkButton({ book, bookId }) {
         await removeBookmark(bookmarkId);
         setBookmarked(false);
         setBookmarkId(null);
+        toast.success("Removed from bookmarks");
       } else {
         const created = await addBookmark({
           userEmail: session.user.email,
@@ -64,9 +66,10 @@ export default function BookmarkButton({ book, bookId }) {
         });
         setBookmarked(true);
         setBookmarkId(created.id);
+        toast.success("Added to bookmarks");
       }
     } catch {
-      // keep previous state on failure
+      toast.error("Failed to update bookmark");
     } finally {
       setLoading(false);
     }

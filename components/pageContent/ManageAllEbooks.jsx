@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { deleteBook, updateBook } from "@/lib/actions/ebooks";
 import { BookOpen, CheckCircle, Clock, Eye, Send, Trash2, Upload } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const GENRE_COLORS = {
   "Fiction": "from-purple-700 to-indigo-900",
@@ -91,19 +92,26 @@ export default function ManageAllEbooksPage({ allEbooks }) {
     const { action, book } = dialog;
     setLoading(true);
 
-    if (action === "publish") {
-      await updateBook(book._id, { status: "published" });
-      setBooks((prev) => prev.map((b) => (b._id === book._id ? { ...b, status: "published" } : b)));
-    } else if (action === "review") {
-      await updateBook(book._id, { status: "under review" });
-      setBooks((prev) => prev.map((b) => (b._id === book._id ? { ...b, status: "under review" } : b)));
-    } else if (action === "delete") {
-      await deleteBook(book._id);
-      setBooks((prev) => prev.filter((b) => b._id !== book._id));
+    try {
+      if (action === "publish") {
+        await updateBook(book._id, { status: "published" });
+        setBooks((prev) => prev.map((b) => (b._id === book._id ? { ...b, status: "published" } : b)));
+        toast.success("Book published successfully");
+      } else if (action === "review") {
+        await updateBook(book._id, { status: "under review" });
+        setBooks((prev) => prev.map((b) => (b._id === book._id ? { ...b, status: "under review" } : b)));
+        toast.success("Book sent for review");
+      } else if (action === "delete") {
+        await deleteBook(book._id);
+        setBooks((prev) => prev.filter((b) => b._id !== book._id));
+        toast.success("Book deleted successfully");
+      }
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+      setDialog(null);
     }
-
-    setLoading(false);
-    setDialog(null);
   };
 
   const gridLayout = "grid-cols-[2fr_1fr_100px_80px_60px_120px_220px]";

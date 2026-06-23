@@ -16,6 +16,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const BuyEbookPage = ({ ebook, user }) => {
   const router = useRouter();
@@ -74,28 +75,34 @@ const BuyEbookPage = ({ ebook, user }) => {
     e.preventDefault();
     setLoading(true);
 
-    const checkoutRes = await fetch("/api/checkout_sessions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        bookId: ebook?._id,
-        bookTitle: ebook?.title,
-        price: ebook?.price,
-        email: form.email,
-        // success page এ soldEbook এর জন্য এগুলাও পাঠাও
-        name: form.name,
-        phone: form.phone,
-        author: ebook?.author,
-        buyerId: user?.id,
-      }),
-    });
+    try {
+      const checkoutRes = await fetch("/api/checkout_sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bookId: ebook?._id,
+          bookTitle: ebook?.title,
+          price: ebook?.price,
+          email: form.email,
+          name: form.name,
+          phone: form.phone,
+          author: ebook?.author,
+          buyerId: user?.id,
+        }),
+      });
 
-    const data = await checkoutRes.json();
-    if (data.url) {
-      window.location.href = data.url;
+      const data = await checkoutRes.json();
+      if (data.url) {
+        window.location.href = data.url;
+        return;
+      }
+
+      toast.error(data.error || "Checkout failed. Please try again.");
+    } catch {
+      toast.error("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const price = ebook?.price ?? 0;
