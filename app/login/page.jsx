@@ -132,6 +132,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { getPostLoginRedirect } from "@/lib/utils/post-login-redirect";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -140,7 +141,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/";
+  const explicitRedirect = searchParams.get("redirect");
+  const oauthCallbackURL = explicitRedirect || "/login/redirect";
+  const signupRedirect = explicitRedirect || "/";
 
   const form = useForm({
     defaultValues: { email: "", password: "" },
@@ -152,7 +155,7 @@ export default function LoginPage() {
       setGoogleLoading(true);
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: redirectTo, // লগইন সফল হলে ইউজার এই লিংকে চলে যাবে
+        callbackURL: oauthCallbackURL,
       });
     } catch (error) {
       console.error("Google login error:", error);
@@ -184,7 +187,8 @@ export default function LoginPage() {
       toast.error(error.message || "Login failed!");
     } else {
       toast.success("Logged in successfully!");
-      router.push(redirectTo);
+      const { data: session } = await authClient.getSession();
+      router.push(getPostLoginRedirect(session?.user?.role, explicitRedirect));
     }
   }
 
@@ -313,7 +317,7 @@ export default function LoginPage() {
         <p className="text-center text-gray-400 text-sm mt-6">
           New to Fable?{" "}
           <a
-            href={`/signup?redirect=${redirectTo}`}
+            href={`/signup?redirect=${signupRedirect}`}
             className="text-[#6344f5] hover:underline font-semibold"
           >
             Create account
