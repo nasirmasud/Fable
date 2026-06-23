@@ -1,6 +1,15 @@
-// app/reader/bookmarks/page.js
 import BookmarksPage from "@/components/pageContent/Bookmark";
+import { getBookmarks } from "@/lib/api/bookmarks";
+import { requireRole } from "@/lib/core/session";
 
-export default function Page() {
-  return <BookmarksPage userEmail="reader@example.com" role="reader" />;
+export default async function Page() {
+  const user = await requireRole("reader");
+  const bookmarks = await getBookmarks(user.email, user.role);
+
+  return (
+    <BookmarksPage
+      initialBookmarks={bookmarks}
+      role={user.role}
+    />
+  );
 }

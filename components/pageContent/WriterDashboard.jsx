@@ -61,7 +61,7 @@ const QUICK_ACTIONS = [
   { icon: PlusSquare, label: "Add New Ebook", sub: "Create a new ebook", href: "/dashboard/writer/add-ebook" },
   { icon: Edit, label: "Manage Ebooks", sub: "View and edit your books", href: "/dashboard/writer/manage" },
   { icon: Clock, label: "Sales History", sub: "Track your earnings", href: "/dashboard/writer/sales" },
-  { icon: Bookmark, label: "My Bookmarks", sub: "View saved books", href: "/dashboard/reader/bookmarks" },
+  { icon: Bookmark, label: "My Bookmarks", sub: "View saved books", href: "/dashboard/writer/bookmarks" },
 ];
 
 // ── Custom Tooltip for chart ───────────────────────────────
