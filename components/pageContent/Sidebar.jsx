@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaBook, FaBookmark, FaChartLine, FaHistory, FaMoneyBill, FaUsers } from "react-icons/fa";
+import { Skeleton } from "../ui/skeleton";
 
 const DashboardItems = {
   reader: [
@@ -58,12 +59,25 @@ function SidebarHeader({ onClose }) {
   );
 }
 
+function getActiveLink(pathname, items) {
+  const match = items
+    .filter(
+      (item) =>
+        pathname === item.link || pathname.startsWith(`${item.link}/`)
+    )
+    .sort((a, b) => b.link.length - a.link.length)[0];
+
+  return match?.link ?? null;
+}
+
 function NavLinks({ pathname, items, onClose }) {
+  const activeLink = getActiveLink(pathname, items);
+
   return (
     <div className="flex flex-col gap-1 px-4">
       {items.map((item) => {
         const Icon = item.icon;
-        const isActive = pathname.startsWith(item.link);
+        const isActive = item.link === activeLink;
         return (
           <Link
             key={item.label}
@@ -78,6 +92,37 @@ function NavLinks({ pathname, items, onClose }) {
         );
       })}
     </div>
+  );
+}
+
+function SidebarSkeleton() {
+  return (
+    <aside className="fixed top-0 left-0 h-full w-64 bg-[#070314] border-r border-white/10 z-50 flex flex-col">
+      <div className="flex items-center gap-2.5 p-6">
+        <Skeleton className="w-8 h-8 rounded-lg bg-white/8" />
+        <Skeleton className="w-16 h-5 bg-white/8" />
+      </div>
+      <div className="px-6 mb-4"><div className="h-px bg-white/10" /></div>
+
+      <div className="flex flex-col gap-1 px-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="flex items-center gap-4 h-12 px-4">
+            <Skeleton className="w-5 h-5 shrink-0 bg-white/8" />
+            <Skeleton className="h-3.5 bg-white/8" style={{ width: `${60 + i * 10}px` }} />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-auto border-t border-white/10 p-4">
+        <div className="flex items-center gap-3">
+          <Skeleton className="w-11 h-11 rounded-full shrink-0 bg-white/8" />
+          <div className="flex flex-col gap-2 flex-1">
+            <Skeleton className="h-3 w-24 bg-white/8" />
+            <Skeleton className="h-2.5 w-32 bg-white/8" />
+          </div>
+        </div>
+      </div>
+    </aside>
   );
 }
 
@@ -130,7 +175,7 @@ export default function Sidebar() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  if (isPending) return null;
+  if (isPending) return <SidebarSkeleton />;
 
   return (
     <>

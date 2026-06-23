@@ -1,10 +1,6 @@
+import ReaderDashboardPage from "@/components/pageContent/ReaderDashboardPage";
 
-const ReaderDashboard = () => {
-  return (
-    <div>
-      Reader Dashboard Page
-    </div>
-  )
+
+export default function Page() {
+  return <ReaderDashboardPage />;
 }
-
-export default ReaderDashboard
