@@ -1,10 +1,5 @@
+import AdminOverviewPage from "@/components/pageContent/AdminOverviewPage";
 
-const AdminDashboard = () => {
-  return (
-    <div>
-      Admin Dashboard Page
-    </div>
-  )
+export default function Page() {
+  return <AdminOverviewPage />;
 }
-
-export default AdminDashboard
