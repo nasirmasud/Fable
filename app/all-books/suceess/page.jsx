@@ -1,4 +1,5 @@
-import SuccessPage from '@/components/pageContent/SussessPage'
+import SuccessPage from "@/components/pageContent/SussessPage"
+import { soldEbook } from "@/lib/actions/soldBooks"
 import { stripe } from "@/lib/stripe"
 import { redirect } from 'next/navigation'
 
@@ -10,16 +11,27 @@ export default async function Success({ searchParams }) {
 
   const {
     status,
-    customer_details: { email: customerEmail }
+    customer_details: { email: customerEmail, name: customerName },
+    metadata,
   } = await stripe.checkout.sessions.retrieve(session_id, {
     expand: ['line_items', 'payment_intent']
   })
 
-  if (status === 'open') {
-    return redirect('/')
-  }
+  if (status === 'open') return redirect('/')
 
   if (status === 'complete') {
-    return <SuccessPage customerEmail={customerEmail} />
+    await soldEbook({
+      bookId: metadata.bookId,
+      bookTitle: metadata.bookTitle,
+      email: customerEmail,
+      name: customerName,
+    })
+
+    return (
+      <SuccessPage
+        customerEmail={customerEmail}
+        bookTitle={metadata.bookTitle}
+      />
+    )
   }
 }

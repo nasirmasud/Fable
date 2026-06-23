@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { soldEbook } from "@/lib/actions/soldBooks";
 import {
   ArrowLeft,
   Download,
@@ -31,26 +30,49 @@ const BuyEbookPage = ({ ebook, user }) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   const submissionData = {
+  //     bookId: ebook?._id,
+  //     author: ebook.author,
+  //     bookTitle: ebook?.title,
+  //     price: ebook?.price,
+  //     buyerId: user?.id,
+  //     ...form,
+  //   };
+
+  //   const res = await soldEbook(submissionData);
+
+  //   if (!res.insertedId) {
+  //     alert('Something went wrong!');
+  //     setLoading(false);
+  //     return;
+  //   }
+
+  //   const checkoutRes = await fetch("/api/checkout_sessions", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       bookId: ebook?._id,
+  //       bookTitle: ebook?.title,
+  //       price: ebook?.price,
+  //       email: form.email,
+  //     }),
+  //   });
+
+  //   const data = await checkoutRes.json();
+  //   if (data.url) {
+  //     window.location.href = data.url
+  //   }
+
+  //   setLoading(false);
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const submissionData = {
-      bookId: ebook?._id,
-      author: ebook.author,
-      bookTitle: ebook?.title,
-      price: ebook?.price,
-      buyerId: user?.id,
-      ...form,
-    };
-
-    const res = await soldEbook(submissionData);
-
-    if (!res.insertedId) {
-      alert('Something went wrong!');
-      setLoading(false);
-      return;
-    }
 
     const checkoutRes = await fetch("/api/checkout_sessions", {
       method: "POST",
@@ -60,12 +82,17 @@ const BuyEbookPage = ({ ebook, user }) => {
         bookTitle: ebook?.title,
         price: ebook?.price,
         email: form.email,
+        // success page এ soldEbook এর জন্য এগুলাও পাঠাও
+        name: form.name,
+        phone: form.phone,
+        author: ebook?.author,
+        buyerId: user?.id,
       }),
     });
 
     const data = await checkoutRes.json();
     if (data.url) {
-      window.location.href = data.url
+      window.location.href = data.url;
     }
 
     setLoading(false);
