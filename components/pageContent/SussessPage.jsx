@@ -4,7 +4,7 @@ import { ArrowRight, BookOpen, CheckCircle, Mail, Sparkles, Star } from 'lucide-
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-export default function SuccessPage({ customerEmail }) {
+export default function SuccessPage({ customerEmail, dashboardHref = "/dashboard/reader" }) {
   const [mounted, setMounted] = useState(false)
   const [particles, setParticles] = useState([])
 
@@ -96,11 +96,11 @@ export default function SuccessPage({ customerEmail }) {
           </div>
 
           <div className="btn-group">
-            <Link href="/dashboard" className="btn-primary">
+            <Link href={dashboardHref} className="btn-primary">
               Start Reading
               <ArrowRight size={16} />
             </Link>
-            <Link href="/" className="btn-ghost">
+            <Link href="/all-books" className="btn-ghost">
               Browse More Ebooks
             </Link>
           </div>

@@ -1,5 +1,6 @@
 import SuccessPage from "@/components/pageContent/SussessPage"
 import { soldEbook } from "@/lib/actions/soldBooks"
+import { getUserSession } from "@/lib/core/session"
 import { stripe } from "@/lib/stripe"
 import { redirect } from 'next/navigation'
 
@@ -20,6 +21,9 @@ export default async function Success({ searchParams }) {
   if (status === 'open') return redirect('/')
 
   if (status === 'complete') {
+    const user = await getUserSession()
+    const dashboardHref = `/dashboard/${user?.role || "reader"}`
+
     await soldEbook({
       bookId: metadata.bookId,
       bookTitle: metadata.bookTitle,
@@ -35,6 +39,7 @@ export default async function Success({ searchParams }) {
       <SuccessPage
         customerEmail={customerEmail}
         bookTitle={metadata.bookTitle}
+        dashboardHref={dashboardHref}
       />
     )
   }
