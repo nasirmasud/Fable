@@ -23,8 +23,12 @@ export default async function Success({ searchParams }) {
     await soldEbook({
       bookId: metadata.bookId,
       bookTitle: metadata.bookTitle,
+      author: metadata.author,
+      price: metadata.price ? Number(metadata.price) : undefined,
+      buyerId: metadata.buyerId,
+      name: metadata.name || customerName,
       email: customerEmail,
-      name: customerName,
+      phone: metadata.phone || "",
     })
 
     return (

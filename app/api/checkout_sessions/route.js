@@ -5,7 +5,16 @@ import { stripe } from "@/lib/stripe";
 
 export async function POST(request) {
   try {
-    const { bookId, bookTitle, price, email } = await request.json();
+    const {
+      bookId,
+      bookTitle,
+      price,
+      email,
+      name,
+      phone,
+      author,
+      buyerId,
+    } = await request.json();
 
     if (!bookTitle || price == null) {
       return NextResponse.json(
@@ -25,7 +34,7 @@ export async function POST(request) {
             currency: "usd",
             product_data: {
               name: bookTitle,
-              metadata: bookId ? { bookId } : undefined,
+              metadata: bookId ? { bookId: String(bookId) } : undefined,
             },
             unit_amount: Math.round(Number(price) * 100),
           },
@@ -35,7 +44,15 @@ export async function POST(request) {
       mode: "payment",
       success_url: `${origin}/all-books/suceess?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/all-books/${bookId}`,
-      metadata: bookId ? { bookId } : undefined,
+      metadata: {
+        bookId: bookId ? String(bookId) : "",
+        bookTitle: String(bookTitle),
+        price: String(price),
+        author: author ? String(author) : "",
+        buyerId: buyerId ? String(buyerId) : "",
+        name: name ? String(name) : "",
+        phone: phone ? String(phone) : "",
+      },
     });
 
     return NextResponse.json({ url: session.url });
