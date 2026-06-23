@@ -201,13 +201,6 @@ export default function AddBookPage() {
   return (
     <div className="min-h-screen bg-[#0d0d1a] text-white">
 
-      {/* Breadcrumb */}
-      <div className="px-6 pt-6 pb-2 text-sm text-gray-400 flex items-center gap-2">
-        <span className="hover:text-purple-400 cursor-pointer transition-colors">Dashboard</span>
-        <span className="text-gray-600">›</span>
-        <span className="text-white font-medium">Add New Ebook</span>
-      </div>
-
       <div
         className="mx-6 mt-3 mb-6 rounded-2xl px-8 py-8 flex items-center justify-between overflow-hidden relative"
         style={{ background: "linear-gradient(135deg, #1a0a3d 0%, #2d1065 55%, #3d1580 100%)" }}

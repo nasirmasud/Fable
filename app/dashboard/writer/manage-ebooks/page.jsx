@@ -3,7 +3,6 @@ import { getWritersEbooks } from "@/lib/api/ebooks";
 import {
   BookMarked,
   BookOpen,
-  Eye,
   FileText,
   Pencil,
   Search,
@@ -104,13 +103,6 @@ export default async function WritersEbooks() {
 
   return (
     <div className="bg-[#0d0d1a] text-white pb-10">
-
-      {/* Breadcrumb */}
-      <div className="px-6 pt-6 pb-2 text-sm text-gray-400 flex items-center gap-2">
-        <span className="hover:text-purple-400 cursor-pointer transition-colors">Dashboard</span>
-        <span className="text-gray-600">›</span>
-        <span className="text-white font-medium">Manage My Books</span>
-      </div>
 
       {/* ── Hero Banner ── */}
       <div
@@ -254,9 +246,6 @@ export default async function WritersEbooks() {
               <div className="flex items-center justify-end gap-2">
                 {/* Actions (Update this block) */}
                 <div className="flex items-center justify-end gap-3 pr-2">
-                  <button className="text-gray-400 hover:text-white transition-colors">
-                    <Eye size={18} />
-                  </button>
                   <button className="text-gray-400 hover:text-white transition-colors">
                     <Pencil size={18} />
                   </button>

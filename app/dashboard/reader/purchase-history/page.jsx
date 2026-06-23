@@ -225,13 +225,6 @@ export default function PurchaseHistory() {
   return (
     <div className="bg-[#0d0d1a] text-white pb-10 min-h-screen">
 
-      {/* Breadcrumb */}
-      <div className="px-6 pt-6 pb-2 text-sm text-gray-400 flex items-center gap-2">
-        <span className="hover:text-purple-400 cursor-pointer transition-colors">Dashboard</span>
-        <span className="text-gray-600">›</span>
-        <span className="text-white font-medium">Purchase History</span>
-      </div>
-
       {/* Hero Banner */}
       <div
         className="mx-6 mt-3 mb-6 rounded-2xl px-8 py-8 flex items-center justify-between overflow-hidden relative"

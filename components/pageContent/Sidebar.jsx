@@ -371,6 +371,11 @@ export default function Sidebar() {
   const navItems = DashboardItems[role] || [];
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handler = (e) => e.key === "Escape" && setIsOpen(false);
@@ -378,7 +383,7 @@ export default function Sidebar() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  if (isPending) return <SidebarSkeleton />;
+  if (!mounted || isPending) return <SidebarSkeleton />;
 
   return (
     <>
