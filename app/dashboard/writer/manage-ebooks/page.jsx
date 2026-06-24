@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 
 import { getWritersEbooks } from "@/lib/api/ebooks";
 import {
@@ -94,7 +95,7 @@ function FilterBar() {
 
 export default async function WritersEbooks() {
   const writerEmail = "writer@writer.com";
-  const ebooks = await getWritersEbooks(writerEmail);
+  const ebooks = await getWritersEbooks(writerEmail) ?? [];
 
   const totalBooks = ebooks.length;
   const published = ebooks.filter((b) => b.status === "published");
