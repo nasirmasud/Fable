@@ -1,4 +1,4 @@
-import { serverFetch } from "@/lib/core/server";
+import { getAllEbooks } from "@/lib/api/ebooks";
 import { ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,8 +20,19 @@ function formatPrice(price) {
   return `$${n.toFixed(2)}`;
 }
 
+function pickRandomBooks(books, count = 6) {
+  if (!Array.isArray(books) || books.length === 0) return [];
+  const shuffled = [...books];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, Math.min(count, shuffled.length));
+}
+
 export default async function FeaturedEbooks() {
-  const featuredBooks = (await serverFetch("/api/ebooks?limit=6")) || [];
+  const allBooks = (await getAllEbooks()) || [];
+  const featuredBooks = pickRandomBooks(allBooks, 6);
 
   return (
     <section className="relative overflow-hidden w-full bg-[#f8fafc] dark:bg-[#070314] py-16 px-6 md:px-10 lg:px-16 font-sans transition-colors duration-300">
@@ -51,8 +62,9 @@ export default async function FeaturedEbooks() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 md:gap-6">
           {featuredBooks.map((book, index) => (
-            <div
+            <Link
               key={book._id}
+              href={`/all-books/${book._id}`}
               className="group relative bg-[#131428] border border-white/5 rounded overflow-hidden cursor-pointer hover:border-purple-500/40 hover:shadow-[0_0_24px_rgba(139,92,246,0.15)] transition-all duration-300"
             >
               {/* Cover */}
@@ -94,7 +106,7 @@ export default async function FeaturedEbooks() {
                   </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
