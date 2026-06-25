@@ -1,4 +1,3 @@
-
 "use client";
 
 import { FadeLeft, StaggerContainer, StaggerItem } from "@/components/tools/MotionWrapper";
@@ -112,7 +111,7 @@ export default function EbookGenres() {
           </FadeLeft>
 
           <Link
-            href="/genres"
+            href="/all-books"
             className="flex items-center gap-1.5 text-base font-semibold text-[#6344f5] dark:text-purple-400 hover:text-[#5032e6] dark:hover:text-purple-300 transition-colors group pl-3.5 sm:pl-0"
           >
             View All
@@ -126,19 +125,21 @@ export default function EbookGenres() {
             const IconComponent = genre.icon;
             return (
               <StaggerItem key={genre.id}>
-                <div className={`p-5 rounded-2xl border ${genre.bgClass} shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-4 cursor-pointer group`}>
-                  <div className={`w-14 h-14 ${genre.iconBg} rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105`}>
-                    <IconComponent size={24} className={genre.iconColor} />
+                <Link href={`/all-books?genre=${encodeURIComponent(genre.name)}`}>
+                  <div className={`p-5 rounded-2xl border ${genre.bgClass} shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-4 cursor-pointer group`}>
+                    <div className={`w-14 h-14 ${genre.iconBg} rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105`}>
+                      <IconComponent size={24} className={genre.iconColor} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#1e293b] dark:text-slate-100 group-hover:text-[#6344f5] dark:group-hover:text-purple-400 transition-colors tracking-tight">
+                        {genre.name}
+                      </h3>
+                      <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mt-0.5">
+                        {genre.count}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-[#1e293b] dark:text-slate-100 group-hover:text-[#6344f5] dark:group-hover:text-purple-400 transition-colors tracking-tight">
-                      {genre.name}
-                    </h3>
-                    <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mt-0.5">
-                      {genre.count}
-                    </p>
-                  </div>
-                </div>
+                </Link>
               </StaggerItem>
             );
           })}

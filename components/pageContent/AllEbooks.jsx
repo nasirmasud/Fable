@@ -1,7 +1,8 @@
 "use client";
 
-import { Search, SlidersHorizontal, Star } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Search, SlidersHorizontal } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -63,7 +64,6 @@ export function BookCard({ book, priority = false, isPurchased = false }) {
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 15vw"
         />
 
-        {/* Purchased badge */}
         {isPurchased && (
           <div className="absolute top-2 right-2 z-10">
             <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shadow-lg">
@@ -86,7 +86,7 @@ export function BookCard({ book, priority = false, isPurchased = false }) {
         <p className="text-white/40 text-xs mb-2">{resolveAuthor(book)}</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+            <span className="text-yellow-400 text-xs">★</span>
             <span className="text-yellow-400 text-xs font-medium">
               {book.rating ?? "—"}
             </span>
@@ -101,10 +101,21 @@ export function BookCard({ book, priority = false, isPurchased = false }) {
 }
 
 export default function AllBooksClient({ ebooks, purchasedBookIds = new Set() }) {
+  const searchParams = useSearchParams();
+
+  // URL থেকে genre পড়া, না থাকলে "All"
+  const genreFromUrl = searchParams.get("genre") ?? "All";
+
   const [activeGenre, setActiveGenre] = useState("All");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("Popular");
   const [page, setPage] = useState(1);
+
+  // URL-এ genre থাকলে automatically সেটা active করা
+  useEffect(() => {
+    setActiveGenre(genreFromUrl);
+    setPage(1);
+  }, [genreFromUrl]);
 
   const genres = useMemo(() => {
     const unique = Array.from(
@@ -179,7 +190,7 @@ export default function AllBooksClient({ ebooks, purchasedBookIds = new Set() })
           <div className="absolute inset-0 bg-line-to-t from-[#0b0c1e] via-transparent to-transparent" />
         </div>
 
-        <div className="relative z-10 w-full px-8 sm:px-12 lg:px-20 pt-16 pb-24 min—h—162.5 flex flex-col justify-center">
+        <div className="relative z-10 w-full px-8 sm:px-12 lg:px-20 pt-16 pb-24 min-h-162.5 flex flex-col justify-center">
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3 leading-relaxed">
             All Books
           </h1>
