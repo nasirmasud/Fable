@@ -197,7 +197,7 @@ export default function Sidebar() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-30 p-2 bg-[#070314] border border-white/10 text-white rounded-lg"
+        className="md:hidden fixed top-4 right-4 z-30 p-2 bg-[#070314] border border-white/10 text-white rounded-lg"
       >
         <Menu size={30} />
       </button>
