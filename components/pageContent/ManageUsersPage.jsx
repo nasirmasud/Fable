@@ -12,11 +12,9 @@ import {
 } from "@/components/ui/select";
 import { deleteUser } from "@/lib/actions/users";
 import {
-  Ban,
   ChevronLeft,
   ChevronRight,
   Filter,
-  MoreHorizontal,
   Search,
   ShieldCheck,
   Trash2,
@@ -54,43 +52,16 @@ function StatusBadge({ status }) {
 
 // ── Row Action Menu ────────────────────────────────────────
 function ActionMenu({ user, onAction, pending }) {
-  const [open, setOpen] = useState(false);
   return (
-    <div className="relative">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="w-8 h-8 text-gray-600 hover:text-gray-300 hover:bg-white/5"
-        onClick={() => setOpen((o) => !o)}
+    <div className="flex items-center justify-center">
+      <button
+        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-full transition-colors disabled:opacity-50"
         disabled={pending}
+        onClick={() => onAction(user)}
+        title="Delete Account"
       >
-        <MoreHorizontal size={16} />
-      </Button>
-      {open && (
-        <div
-          className="absolute right-0 top-9 z-20 bg-[#1a1a35] border border-white/10 rounded-xl shadow-2xl py-1 w-44"
-          onMouseLeave={() => setOpen(false)}
-        >
-          <button
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors disabled:opacity-50"
-            disabled={pending}
-            onClick={() => { onAction("ban", user); setOpen(false); }}
-          >
-            {user.status === "Banned"
-              ? <><UserCheck size={14} className="text-green-400" /> Unban User</>
-              : <><Ban size={14} className="text-red-400" /> Ban User</>
-            }
-          </button>
-          <div className="border-t border-white/5 my-1" />
-          <button
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
-            disabled={pending}
-            onClick={() => { onAction("delete", user); setOpen(false); }}
-          >
-            <Trash2 size={14} /> Delete Account
-          </button>
-        </div>
-      )}
+        <Trash2 size={16} />
+      </button>
     </div>
   );
 }
@@ -130,26 +101,16 @@ export default function ManageUsersPage({ allUsers }) {
     });
   };
 
-  const handleAction = async (type, target) => {
+  const handleAction = async (target) => {
     setPending(target.id, true);
-
     try {
-      if (type === "ban") {
-        const newStatus = target.status === "Banned" ? "Active" : "Banned";
-        setUsers((prev) =>
-          prev.map((u) => (u.id === target.id ? { ...u, status: newStatus } : u))
-        );
-        toast.success(
-          newStatus === "Banned" ? "User banned successfully" : "User unbanned successfully"
-        );
-      } else if (type === "delete") {
-        await deleteUser(target.id);
-        setUsers((prev) => prev.filter((u) => u.id !== target.id));
-        toast.success("User deleted successfully");
-      }
+      await deleteUser(target.id);
+      setUsers((prev) => prev.filter((u) => u.id !== target.id));
+
+      toast.success("User deleted successfully");
     } catch (err) {
-      console.error(`Failed to ${type} user ${target.id}:`, err);
-      toast.error(type === "delete" ? "Failed to delete user. Try again." : "Failed to update user. Try again.");
+      console.error(`Failed to delete user ${target.id}:`, err);
+      toast.error("Failed to delete user. Try again.");
     } finally {
       setPending(target.id, false);
     }
