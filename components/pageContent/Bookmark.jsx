@@ -20,6 +20,7 @@ import {
   ChevronRight,
   Search,
 } from "lucide-react";
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -57,7 +58,13 @@ function CoverThumb({ title, gradient, coverPreview }) {
   if (coverPreview) {
     return (
       <div className="relative h-20 w-14 shrink-0 overflow-hidden rounded-md ring-1 ring-white/10">
-        <img src={coverPreview} alt={title} className="h-full w-full object-cover" />
+        <Image
+          src={coverPreview}
+          alt={title}
+          fill
+          sizes="56px"
+          className="object-cover"
+        />
       </div>
     );
   }

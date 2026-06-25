@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { deleteBook, updateBook } from "@/lib/actions/ebooks";
 import { BookOpen, CheckCircle, Clock, Eye, Send, Trash2, Upload } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -21,18 +22,17 @@ const PAGE_SIZE = 8;
 
 // ── Action Buttons ─────────────────────────────────────────
 function ActionButtons({ book, onTrigger }) {
-  const canPublish = book.status === "draft" || book.status === "under review";
+  const isPublished = book.status === "published";
   const canReview = book.status === "draft";
 
   return (
     <div className="flex items-center gap-2">
       <button
-        disabled={!canPublish}
-        onClick={() => onTrigger("publish", book)}
-        className={`flex items-center gap-1 text-[10px] font-semibold transition ${canPublish ? "text-green-400 hover:text-green-300" : "text-gray-700 cursor-not-allowed"
+        onClick={() => onTrigger(isPublished ? "unpublish" : "publish", book)}
+        className={`flex items-center gap-1 text-[10px] font-semibold transition ${isPublished ? "text-yellow-400 hover:text-yellow-300" : "text-green-400 hover:text-green-300"
           }`}
       >
-        <Upload size={12} /> Publish
+        <Upload size={12} /> {isPublished ? "Unpublish" : "Publish"}
       </button>
       <button
         disabled={!canReview}
@@ -56,7 +56,9 @@ function ActionButtons({ book, onTrigger }) {
 function BookCover({ src, title, genre }) {
   const gradient = GENRE_COLORS[genre] ?? "from-purple-700 to-indigo-900";
   return src ? (
-    <img src={src} alt={title} className="w-10 h-14 object-cover rounded-lg flex-shrink-0" />
+    <div className="relative w-10 h-14 flex-shrink-0">
+      <Image src={src} alt={title} fill sizes="40px" className="object-cover rounded-lg" />
+    </div>
   ) : (
     <div className={`w-10 h-14 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0`}>
       <BookOpen size={14} className="text-white/50" />
@@ -81,7 +83,7 @@ function StatusBadge({ status }) {
 // ── Main ───────────────────────────────────────────────────
 export default function ManageAllEbooksPage({ allEbooks }) {
   const [books, setBooks] = useState(allEbooks);
-  const [dialog, setDialog] = useState(null); // { action, book }
+  const [dialog, setDialog] = useState(null);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -97,6 +99,10 @@ export default function ManageAllEbooksPage({ allEbooks }) {
         await updateBook(book._id, { status: "published" });
         setBooks((prev) => prev.map((b) => (b._id === book._id ? { ...b, status: "published" } : b)));
         toast.success("Book published successfully");
+      } else if (action === "unpublish") {
+        await updateBook(book._id, { status: "draft" });
+        setBooks((prev) => prev.map((b) => (b._id === book._id ? { ...b, status: "draft" } : b)));
+        toast.success("Book unpublished");
       } else if (action === "review") {
         await updateBook(book._id, { status: "under review" });
         setBooks((prev) => prev.map((b) => (b._id === book._id ? { ...b, status: "under review" } : b)));
@@ -125,22 +131,13 @@ export default function ManageAllEbooksPage({ allEbooks }) {
           <div className="bg-[#13132a] border border-white/10 rounded-2xl p-6 w-full max-w-sm">
             <h2 className="text-lg font-bold mb-4 capitalize">{dialog.action} Book</h2>
             <p className="text-sm text-gray-400 mb-6">
-              Are you sure you want to {dialog.action} `&quot;{dialog.book.title}`&quot;?`
+              Are you sure you want to {dialog.action} &quot;{dialog.book.title}&quot;?
             </p>
             <div className="flex gap-3">
-              <Button
-                variant="ghost"
-                className="flex-1"
-                onClick={() => setDialog(null)}
-                disabled={loading}
-              >
+              <Button variant="ghost" className="flex-1" onClick={() => setDialog(null)} disabled={loading}>
                 Cancel
               </Button>
-              <Button
-                className="flex-1 bg-purple-600 hover:bg-purple-700"
-                onClick={handleConfirm}
-                disabled={loading}
-              >
+              <Button className="flex-1 bg-purple-600 hover:bg-purple-700" onClick={handleConfirm} disabled={loading}>
                 {loading ? "Processing..." : "Confirm"}
               </Button>
             </div>
@@ -194,23 +191,11 @@ export default function ManageAllEbooksPage({ allEbooks }) {
           {/* ── Pagination ── */}
           {totalPages > 1 && (
             <div className="flex items-center justify-end gap-2 pt-4 border-t border-white/5 mt-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
                 Previous
               </Button>
-              <span className="text-xs text-gray-500">
-                {page} / {totalPages}
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-              >
+              <span className="text-xs text-gray-500">{page} / {totalPages}</span>
+              <Button variant="ghost" size="sm" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
                 Next
               </Button>
             </div>

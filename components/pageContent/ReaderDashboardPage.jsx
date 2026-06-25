@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Image from "next/image";
 
 const READING_DATA = {
   "7": [
@@ -86,7 +87,14 @@ function BookCover({ src, title }) {
   ];
   const idx = title.length % colors.length;
   return src ? (
-    <img src={src} alt={title} className="w-10 h-14 object-cover rounded flex-shrink-0" />
+    <div className="relative w-10 h-14 flex-shrink-0">
+      <Image
+        src={src}
+        alt={title}
+        fill
+        sizes="40px"
+        className="object-cover rounded"
+      /></div>
   ) : (
     <div className={`w-10 h-14 rounded bg-gradient-to-br ${colors[idx]} flex items-center justify-center flex-shrink-0`}>
       <BookOpen size={14} className="text-white/60" />
