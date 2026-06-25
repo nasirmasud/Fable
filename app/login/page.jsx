@@ -151,17 +151,24 @@ export default function LoginPage() {
 
   // ── গুগল লগইন হ্যান্ডলার ──
   const handleGoogleLogin = async () => {
-    try {
-      setGoogleLoading(true);
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: oauthCallbackURL,
-      });
-    } catch (error) {
-      console.error("Google login error:", error);
-      toast.error("Google sign in failed!");
+    setGoogleLoading(true);
+    const { data, error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: oauthCallbackURL,
+    });
+
+    if (error) {
+      toast.error(error.message || "Google sign in failed!");
       setGoogleLoading(false);
+      return;
     }
+
+    if (data?.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    setGoogleLoading(false);
   };
 
   const handleQuickLogin = async (role) => {
@@ -177,7 +184,7 @@ export default function LoginPage() {
 
   async function onSubmit(values) {
     setLoading(true);
-    const { error } = await authClient.signIn.email({
+    const { data, error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
     });
@@ -187,8 +194,7 @@ export default function LoginPage() {
       toast.error(error.message || "Login failed!");
     } else {
       toast.success("Logged in successfully!");
-      const { data: session } = await authClient.getSession();
-      router.push(getPostLoginRedirect(session?.user?.role, explicitRedirect));
+      router.push(getPostLoginRedirect(data?.user?.role, explicitRedirect));
     }
   }
 

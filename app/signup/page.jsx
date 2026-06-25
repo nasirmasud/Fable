@@ -203,17 +203,24 @@ export default function SignUpPage() {
 
   // ── গুগল সাইন-আপ হ্যান্ডলার ──
   const handleGoogleSignUp = async () => {
-    try {
-      setGoogleLoading(true);
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: redirectTo,
-      });
-    } catch (error) {
-      console.error("Google sign up error:", error);
-      toast.error("Google sign up failed!");
+    setGoogleLoading(true);
+    const { data, error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: redirectTo,
+    });
+
+    if (error) {
+      toast.error(error.message || "Google sign up failed!");
       setGoogleLoading(false);
+      return;
     }
+
+    if (data?.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    setGoogleLoading(false);
   };
 
   const handleImageUpload = async (e) => {
