@@ -1,5 +1,6 @@
 "use client";
 
+import { FadeLeft, StaggerContainer, StaggerItem } from "@/components/tools/MotionWrapper";
 import { ArrowRight, Quote, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,68 +39,73 @@ export default function ReadersFeedback() {
       <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
 
       <div className="w-full mx-auto">
+
+        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-[#0f172a] dark:text-white transition-colors">
-              What Readers Say
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-sm md:text-[15px] mt-2 transition-colors">
+          <FadeLeft>
+            <div className="flex items-center gap-2.5 mb-2">
+              <span className="w-1 h-7 bg-[#6344f5] rounded-full block" />
+              <h2 className="text-2xl md:text-3xl font-bold text-[#0f172a] dark:text-white transition-colors">
+                What Readers Say
+              </h2>
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm md:text-[15px] pl-3.5 transition-colors">
               Join thousands of happy readers
             </p>
-          </div>
+          </FadeLeft>
 
           <Link
             href="/feedbacks"
-            className="flex items-center gap-1.5 text-base font-semibold text-[#6344f5] dark:text-purple-400 hover:text-[#5032e6] dark:hover:text-purple-300 transition-colors group"
+            className="flex items-center gap-1.5 text-base font-semibold text-[#6344f5] dark:text-purple-400 hover:text-[#5032e6] dark:hover:text-purple-300 transition-colors group pl-3.5 sm:pl-0"
           >
             View All
             <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        {/* Feedback Cards */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           {feedbacks.map((item) => (
-            <div
-              key={item.id}
-              className="p-6 md:p-8 rounded-2xl bg-[#f8fafc] dark:bg-[#0d0821] border border-slate-100 dark:border-purple-500/10 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between items-start group relative"
-            >
-              <div className="text-[#6344f5] dark:text-purple-400 mb-4 opacity-80">
-                <Quote size={28} className="fill-current transform rotate-180" />
-              </div>
-
-              <p className="text-[15px] md:text-base text-gray-600 dark:text-gray-300 leading-relaxed font-medium mb-6 grow">
-                {item.text}
-              </p>
-
-              <div className="flex items-center gap-4 mt-auto">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner shrink-0">
-                  <Image
-                    src={item.avatar}
-                    alt={item.name}
-                    fill
-                    sizes="100px"
-                    className="object-cover"
-                  />
+            <StaggerItem key={item.id}>
+              <div className="p-6 md:p-8 rounded-2xl bg-[#f8fafc] dark:bg-[#0d0821] border border-slate-100 dark:border-purple-500/10 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between items-start group relative">
+                <div className="text-[#6344f5] dark:text-purple-400 mb-4 opacity-80">
+                  <Quote size={28} className="fill-current transform rotate-180" />
                 </div>
 
-                <div>
-                  <h3 className="text-base font-bold text-[#1e293b] dark:text-slate-100 tracking-tight transition-colors">
-                    {item.name}
-                  </h3>
-                  <div className="flex items-center gap-0.5 mt-1">
-                    {[...Array(item.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        size={14}
-                        className="text-amber-400 fill-current"
-                      />
-                    ))}
+                <p className="text-[15px] md:text-base text-gray-600 dark:text-gray-300 leading-relaxed font-medium mb-6 grow">
+                  {item.text}
+                </p>
+
+                <div className="flex items-center gap-4 mt-auto">
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner shrink-0">
+                    <Image
+                      src={item.avatar}
+                      alt={item.name}
+                      fill
+                      sizes="100px"
+                      className="object-cover"
+                    />
+                  </div>
+
+                  <div>
+                    <h3 className="text-base font-bold text-[#1e293b] dark:text-slate-100 tracking-tight transition-colors">
+                      {item.name}
+                    </h3>
+                    <div className="flex items-center gap-0.5 mt-1">
+                      {[...Array(item.rating)].map((_, i) => (
+                        <Star
+                          key={i}
+                          size={14}
+                          className="text-amber-400 fill-current"
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
         {/* Pagination Dots */}
         <div className="flex items-center justify-center gap-2 mt-4">
@@ -115,6 +121,7 @@ export default function ReadersFeedback() {
             />
           ))}
         </div>
+
       </div>
     </section>
   );
