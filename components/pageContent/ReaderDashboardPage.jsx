@@ -32,7 +32,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// ── Mock Data ──────────────────────────────────────────────
 const READING_DATA = {
   "7": [
     { date: "May 14", pages: 42 },
@@ -59,13 +58,6 @@ const READING_DATA = {
   ],
 };
 
-const RECENT_BOOKS = [
-  { title: "The Lost Kingdom", status: "Reading", progress: 68, cover: null },
-  { title: "Beyond the Stars", status: "Completed", progress: 100, cover: null },
-  { title: "Love & Other Worlds", status: "Unread", progress: 0, cover: null },
-  { title: "Whispers in the Dark", status: "Reading", progress: 34, cover: null },
-];
-
 const QUICK_ACTIONS = [
   { icon: ShoppingBag, label: "Browse Store", sub: "Discover new books", href: "/dashboard/reader/store" },
   { icon: Library, label: "My Library", sub: "View purchased books", href: "/dashboard/reader/purchased-books" },
@@ -73,7 +65,6 @@ const QUICK_ACTIONS = [
   { icon: BookMarked, label: "My Bookmarks", sub: "Books saved for later", href: "/dashboard/reader/bookmarks" },
 ];
 
-// ── Custom Tooltip ─────────────────────────────────────────
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
@@ -86,7 +77,6 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-// ── Book Cover placeholder ─────────────────────────────────
 function BookCover({ src, title }) {
   const colors = [
     "from-purple-700 to-indigo-900",
@@ -104,7 +94,6 @@ function BookCover({ src, title }) {
   );
 }
 
-// ── Reading status badge ───────────────────────────────────
 function ReadingBadge({ status }) {
   const map = {
     Reading: "bg-blue-500/15 text-blue-400",
@@ -118,7 +107,6 @@ function ReadingBadge({ status }) {
   );
 }
 
-// ── Progress bar ───────────────────────────────────────────
 function ProgressBar({ value }) {
   return (
     <div className="w-full h-1 bg-white/10 rounded-full mt-1.5 overflow-hidden">
@@ -130,15 +118,23 @@ function ProgressBar({ value }) {
   );
 }
 
-// ── Main Component ─────────────────────────────────────────
-export default function ReaderDashboardPage() {
+export default function ReaderDashboardPage({ soldBooks = [], userName }) {
   const [range, setRange] = useState("7");
+
+  const totalSpent = soldBooks.reduce((acc, b) => acc + (Number(b.price) || 0), 0);
+
+  const recentBooks = soldBooks.slice(0, 4).map((b) => ({
+    title: b.bookTitle,
+    status: b.status ?? "Unread",
+    progress: 0,
+    cover: b.coverImage ?? null,
+  }));
 
   const stats = [
     {
       icon: Library,
       label: "Books Purchased",
-      value: "18",
+      value: String(soldBooks.length),
       sub: "Total books in your library",
       color: "bg-purple-500/20 text-purple-400",
     },
@@ -152,7 +148,7 @@ export default function ReaderDashboardPage() {
     {
       icon: CreditCard,
       label: "Total Spent",
-      value: "$67.85",
+      value: `$${totalSpent.toFixed(2)}`,
       sub: "Across all purchases",
       color: "bg-green-500/20 text-green-400",
     },
@@ -171,7 +167,7 @@ export default function ReaderDashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          Welcome back, Alex <span>👋</span>
+          Welcome back, {userName ?? "Reader"} <span>👋</span>
         </h1>
         <p className="text-gray-400 text-sm mt-1">
           Here&apos;s what&apos;s happening with your reading today.
@@ -277,19 +273,26 @@ export default function ReaderDashboardPage() {
             </div>
           </CardHeader>
           <CardContent className="px-6 pb-6 space-y-4">
-            {RECENT_BOOKS.map((book) => (
-              <div key={book.title} className="flex items-center gap-3">
-                <BookCover src={book.cover} title={book.title} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white truncate">{book.title}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <ReadingBadge status={book.status} />
-                  </div>
-                  <ProgressBar value={book.progress} />
-                </div>
-                <span className="text-xs text-gray-500 flex-shrink-0">{book.progress}%</span>
+            {recentBooks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-8 gap-2">
+                <BookOpen size={28} className="text-gray-700" />
+                <p className="text-sm text-gray-600">No books yet.</p>
               </div>
-            ))}
+            ) : (
+              recentBooks.map((book, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  <BookCover src={book.cover} title={book.title} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">{book.title}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <ReadingBadge status={book.status} />
+                    </div>
+                    <ProgressBar value={book.progress} />
+                  </div>
+                  <span className="text-xs text-gray-500 flex-shrink-0">{book.progress}%</span>
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
       </div>

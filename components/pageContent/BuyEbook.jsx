@@ -88,6 +88,7 @@ const BuyEbookPage = ({ ebook, user }) => {
           phone: form.phone,
           author: ebook?.author,
           buyerId: user?.id,
+          coverImage: ebook?.coverPreview,
         }),
       });
 

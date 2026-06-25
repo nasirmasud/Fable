@@ -1,11 +1,5 @@
-// DB থেকে ডেটা নেওয়ার জন্য শুধু এই লাইনটা replace করো:
-// js// এইটা সরাও:
-// const history = MOCK_HISTORY;
-
-// // এইটা দাও:
-// const history = await getPurchaseHistory(readerEmail);
-
-
+import { getAllSoldBooks } from "@/lib/api/soldBooks";
+import { auth } from "@/lib/auth";
 import {
   BookMarked,
   BookOpen,
@@ -21,6 +15,7 @@ import {
   TrendingUp,
   XCircle,
 } from "lucide-react";
+import { headers } from "next/headers";
 import Image from "next/image";
 
 function formatDate(dateStr) {
@@ -140,87 +135,23 @@ function FilterBar() {
   );
 }
 
-// ── Mock data — replace with real DB call ───────────────────────────────────
-const MOCK_HISTORY = [
-  {
-    _id: "txn_001",
-    transactionId: "TXN-2024-00123",
-    book: { title: "The Lost Kingdom", genre: "Fantasy", coverPreview: null },
-    author: "Luna Everhart",
-    purchasedAt: "2024-05-20T10:32:00Z",
-    price: 9.99,
-    paymentMethod: "Visa •••• 4242",
-    status: "completed",
-  },
-  {
-    _id: "txn_002",
-    transactionId: "TXN-2024-00118",
-    book: { title: "Beyond the Stars", genre: "Sci-Fi", coverPreview: null },
-    author: "Orion Blake",
-    purchasedAt: "2024-05-18T15:14:00Z",
-    price: 5.99,
-    paymentMethod: "PayPal",
-    status: "completed",
-  },
-  {
-    _id: "txn_003",
-    transactionId: "TXN-2024-00104",
-    book: { title: "Love & Other Worlds", genre: "Romance", coverPreview: null },
-    author: "Aurora West",
-    purchasedAt: "2024-05-15T09:05:00Z",
-    price: 3.99,
-    paymentMethod: "Visa •••• 4242",
-    status: "completed",
-  },
-  {
-    _id: "txn_004",
-    transactionId: "TXN-2024-00098",
-    book: { title: "Whispers in the Dark", genre: "Horror", coverPreview: null },
-    author: "M. R. Shadow",
-    purchasedAt: "2024-05-10T20:47:00Z",
-    price: 4.99,
-    paymentMethod: "Mastercard •••• 8891",
-    status: "refunded",
-  },
-  {
-    _id: "txn_005",
-    transactionId: "TXN-2024-00089",
-    book: { title: "Beyond the Horizon", genre: "Adventure", coverPreview: null },
-    author: "Ethan Walker",
-    purchasedAt: "2024-05-05T13:22:00Z",
-    price: 4.99,
-    paymentMethod: "Visa •••• 4242",
-    status: "completed",
-  },
-  {
-    _id: "txn_006",
-    transactionId: "TXN-2024-00071",
-    book: { title: "The Dragon's Legacy", genre: "Fantasy", coverPreview: null },
-    author: "Luna Everhart",
-    purchasedAt: "2024-05-01T08:10:00Z",
-    price: 6.99,
-    paymentMethod: "PayPal",
-    status: "pending",
-  },
-];
+export default async function PurchaseHistory() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const buyerId = session?.user?.id;
+  const history = await getAllSoldBooks(buyerId);
 
-export default function PurchaseHistory() {
-  // Replace MOCK_HISTORY with: const history = await getPurchaseHistory(readerEmail);
-  const history = MOCK_HISTORY;
-
-  const totalTransactions = history.length;
+  const totalTransactions = history?.length ?? 0;
   const totalSpent = history
-    .filter((t) => t.status === "completed")
-    .reduce((acc, t) => acc + (t.price ?? 0), 0);
-  const thisMonth = history.filter((t) => {
-    const d = new Date(t.purchasedAt);
+    ?.reduce((acc, t) => acc + (Number(t.price) || 0), 0) ?? 0;
+
+  const thisMonth = history?.filter((t) => {
+    const d = new Date(t.createdAt);
     const now = new Date();
-    return (
-      d.getMonth() === now.getMonth() &&
-      d.getFullYear() === now.getFullYear()
-    );
-  }).length;
-  const refunds = history.filter((t) => t.status === "refunded").length;
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length ?? 0;
+  const refunds = history?.filter((t) => t.status === "refunded").length ?? 0;
 
   return (
     <div className="bg-[#0d0d1a] text-white pb-10 min-h-screen">
@@ -258,7 +189,6 @@ export default function PurchaseHistory() {
           </p>
         </div>
 
-        {/* Decorative right side */}
         <div className="hidden md:flex items-center gap-3 relative z-10 mr-8 opacity-30">
           <div className="flex flex-col gap-2">
             <div className="w-32 h-8 rounded-lg bg-purple-400/20 border border-purple-300/20" />
@@ -283,7 +213,6 @@ export default function PurchaseHistory() {
       {/* Table */}
       <div className="mx-6 bg-[#13132a] border border-white/5 rounded-2xl overflow-hidden">
 
-        {/* Table header */}
         <div
           className="grid items-center gap-x-4 px-6 py-3 border-b border-white/5 text-xs text-gray-500 font-medium uppercase tracking-wider"
           style={{ gridTemplateColumns: "80px 2fr 1fr 1.2fr 80px 1.1fr 110px 60px" }}
@@ -298,8 +227,7 @@ export default function PurchaseHistory() {
           <span className="text-right">Invoice</span>
         </div>
 
-        {/* Rows */}
-        {history.length === 0 ? (
+        {!history || history.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <Receipt size={36} className="text-gray-700" />
             <p className="text-sm text-gray-600">No transactions found.</p>
@@ -313,10 +241,10 @@ export default function PurchaseHistory() {
             >
               {/* Cover */}
               <div className="w-14 h-20 rounded-lg overflow-hidden bg-[#1a1035] border border-white/5 relative shrink-0">
-                {txn.book?.coverPreview ? (
+                {txn.coverImage ? (
                   <Image
-                    src={txn.book.coverPreview}
-                    alt={txn.book.title}
+                    src={txn.coverImage}
+                    alt={txn.bookTitle}
                     fill
                     className="object-cover"
                     unoptimized
@@ -331,21 +259,23 @@ export default function PurchaseHistory() {
               {/* Book title + author + genre */}
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-white truncate group-hover:text-purple-300 transition-colors">
-                  {txn.book?.title}
+                  {txn.bookTitle}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5 truncate">{txn.author}</p>
                 <div className="mt-1.5">
-                  <GenreBadge genre={txn.book?.genre} />
+                  <GenreBadge genre={txn.genre ?? "Ebook"} />
                 </div>
               </div>
 
               {/* Transaction ID */}
-              <div className="text-xs text-gray-400 font-mono truncate">{txn.transactionId}</div>
+              <div className="text-xs text-gray-400 font-mono truncate">
+                {txn._id?.toString().slice(-8).toUpperCase()}
+              </div>
 
               {/* Date & Time */}
               <div>
-                <p className="text-xs text-gray-300">{formatDate(txn.purchasedAt)}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{formatTime(txn.purchasedAt)}</p>
+                <p className="text-xs text-gray-300">{formatDate(txn.createdAt)}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{formatTime(txn.createdAt)}</p>
               </div>
 
               {/* Amount */}
@@ -356,11 +286,13 @@ export default function PurchaseHistory() {
               </div>
 
               {/* Payment method */}
-              <div className="text-xs text-gray-400 truncate">{txn.paymentMethod}</div>
+              <div className="text-xs text-gray-400 truncate">
+                {txn.paymentMethod ?? "Stripe"}
+              </div>
 
               {/* Status */}
               <div>
-                <PaymentStatusBadge status={txn.status} />
+                <PaymentStatusBadge status={txn.status ?? "completed"} />
               </div>
 
               {/* Invoice download */}
@@ -378,7 +310,9 @@ export default function PurchaseHistory() {
 
         {/* Pagination */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-white/5">
-          <p className="text-xs text-gray-500">Showing 1 to 6 of 24 transactions</p>
+          <p className="text-xs text-gray-500">
+            Showing 1 to {history?.length ?? 0} of {history?.length ?? 0} transactions
+          </p>
 
           <div className="flex items-center gap-1">
             <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/5 text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
@@ -412,5 +346,3 @@ export default function PurchaseHistory() {
     </div>
   );
 }
-
-

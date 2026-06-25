@@ -1,25 +1,6 @@
-// // এইটা সরাও:
-// const books = MOCK_BOOKS;
-
-// // এইটা দাও:
-// const books = await getPurchasedBooks(readerEmail);
-// ৩. Component-কে async করো (এটা Next.js Server Component, তাই সরাসরি await চলবে):
-// jsexport default async function PurchasedBooks() {
-//   const readerEmail = "reader@example.com"; // session থেকে নাও
-//   const books = await getPurchasedBooks(readerEmail);
-//   ...
-// }
-// Session থেকে email নিতে চাইলে (Next Auth ব্যবহার করলে):
-// jsimport { getServerSession } from "next-auth";
-// import { authOptions } from "@/lib/auth";
-
-// export default async function PurchasedBooks() {
-//   const session = await getServerSession(authOptions);
-//   const readerEmail = session?.user?.email;
-//   const books = await getPurchasedBooks(readerEmail);
-//   ...
-// }
-
+import { getAllSoldBooks } from "@/lib/api/soldBooks";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 import {
   BookMarked,
@@ -136,28 +117,22 @@ function FilterBar() {
   );
 }
 
-// ── Mock data — replace with real API call ──────────────────────────────────
-const MOCK_BOOKS = [
-  { _id: "1", title: "The Lost Kingdom", author: "Luna Everhart", genre: "Fantasy", purchasedAt: "2024-05-20", price: 9.99, status: "downloaded", coverPreview: null },
-  { _id: "2", title: "Beyond the Stars", author: "Orion Blake", genre: "Sci-Fi", purchasedAt: "2024-05-18", price: 5.99, status: "reading", coverPreview: null },
-  { _id: "3", title: "Love & Other Worlds", author: "Aurora West", genre: "Romance", purchasedAt: "2024-05-15", price: 3.99, status: "downloaded", coverPreview: null },
-  { _id: "4", title: "Whispers in the Dark", author: "M. R. Shadow", genre: "Horror", purchasedAt: "2024-05-10", price: 4.99, status: "downloaded", coverPreview: null },
-  { _id: "5", title: "Beyond the Horizon", author: "Ethan Walker", genre: "Adventure", purchasedAt: "2024-05-05", price: 4.99, status: "downloaded", coverPreview: null },
-  { _id: "6", title: "The Dragon's Legacy", author: "Luna Everhart", genre: "Fantasy", purchasedAt: "2024-05-01", price: 6.99, status: "unread", coverPreview: null },
-];
+export default async function PurchasedBooks() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-export default function PurchasedBooks() {
-  // Replace MOCK_BOOKS with: const books = await getPurchasedBooks(readerEmail);
-  const books = MOCK_BOOKS;
+  const buyerId = session?.user?.id;
+  const books = await getAllSoldBooks(buyerId);
 
-  const totalBooks = books.length;
-  const totalSpent = books.reduce((acc, b) => acc + (b.price ?? 0), 0);
-  const thisMonth = books.filter((b) => {
-    const d = new Date(b.purchasedAt);
+  const totalBooks = books?.length ?? 0;
+  const totalSpent = books?.reduce((acc, b) => acc + (Number(b.price) || 0), 0) ?? 0;
+  const thisMonth = books?.filter((b) => {
+    const d = new Date(b.createdAt);
     const now = new Date();
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  }).length;
-  const wishlist = 7; // replace with real wishlist count
+  }).length ?? 0;
+  const wishlist = 7;
 
   return (
     <div className="bg-[#0d0d1a] text-white pb-10 min-h-screen">
@@ -167,7 +142,6 @@ export default function PurchasedBooks() {
         className="mx-6 mt-3 mb-6 rounded-2xl px-8 py-8 flex items-center justify-between overflow-hidden relative"
         style={{ background: "linear-gradient(135deg, #1a0a3d 0%, #2d1065 55%, #3d1580 100%)" }}
       >
-        {/* Sparkles */}
         {[
           { top: "20%", left: "55%" },
           { top: "15%", left: "68%" },
@@ -184,7 +158,6 @@ export default function PurchasedBooks() {
           </span>
         ))}
 
-        {/* Left text */}
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-9 h-9 rounded-lg bg-purple-500/30 flex items-center justify-center">
@@ -197,7 +170,6 @@ export default function PurchasedBooks() {
           </p>
         </div>
 
-        {/* Right decorative shopping bag */}
         <div className="hidden md:flex items-end gap-2 relative z-10 mr-8 opacity-30">
           <BookOpen size={28} className="text-purple-200 mb-4" />
           <div className="w-20 h-24 rounded-xl border border-purple-300/20 bg-purple-500/20 flex items-center justify-center rotate-3">
@@ -223,7 +195,6 @@ export default function PurchasedBooks() {
       {/* Table */}
       <div className="mx-6 bg-[#13132a] border border-white/5 rounded-2xl overflow-hidden">
 
-        {/* Table header */}
         <div
           className="grid items-center gap-x-4 px-6 py-3 border-b border-white/5 text-xs text-gray-500 font-medium uppercase tracking-wider"
           style={{ gridTemplateColumns: "80px 2fr 1.2fr 1fr 80px 110px 100px" }}
@@ -237,8 +208,7 @@ export default function PurchasedBooks() {
           <span className="text-right">Actions</span>
         </div>
 
-        {/* Rows */}
-        {books.length === 0 ? (
+        {!books || books.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <BookOpen size={36} className="text-gray-700" />
             <p className="text-sm text-gray-600">No purchased books found.</p>
@@ -252,8 +222,8 @@ export default function PurchasedBooks() {
             >
               {/* Cover */}
               <div className="w-14 h-20 rounded-lg overflow-hidden bg-[#1a1035] border border-white/5 relative shrink-0">
-                {book.coverPreview ? (
-                  <Image src={book.coverPreview} alt={book.title} fill className="object-cover" unoptimized />
+                {book.coverImage ? (
+                  <Image src={book.coverImage} alt={book.bookTitle} fill className="object-cover" unoptimized />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <BookOpen size={16} className="text-purple-500/30" />
@@ -264,10 +234,10 @@ export default function PurchasedBooks() {
               {/* Title + genre */}
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-white truncate group-hover:text-purple-300 transition-colors">
-                  {book.title}
+                  {book.bookTitle}
                 </p>
                 <div className="mt-1.5">
-                  <GenreBadge genre={book.genre} />
+                  <GenreBadge genre={book.genre ?? "Ebook"} />
                 </div>
               </div>
 
@@ -275,7 +245,7 @@ export default function PurchasedBooks() {
               <div className="text-sm text-gray-300 truncate">{book.author}</div>
 
               {/* Purchased On */}
-              <div className="text-xs text-gray-500">{formatDate(book.purchasedAt)}</div>
+              <div className="text-xs text-gray-500">{formatDate(book.createdAt)}</div>
 
               {/* Price */}
               <div className="text-sm font-semibold text-white">
@@ -284,7 +254,7 @@ export default function PurchasedBooks() {
 
               {/* Status */}
               <div>
-                <StatusBadge status={book.status} />
+                <StatusBadge status={book.status ?? "unread"} />
               </div>
 
               {/* Actions */}
@@ -303,7 +273,9 @@ export default function PurchasedBooks() {
 
         {/* Pagination */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-white/5">
-          <p className="text-xs text-gray-500">Showing 1 to 6 of 18 books</p>
+          <p className="text-xs text-gray-500">
+            Showing 1 to {books?.length ?? 0} of {books?.length ?? 0} books
+          </p>
 
           <div className="flex items-center gap-1">
             <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/5 bg-transparent text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
