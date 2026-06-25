@@ -30,6 +30,8 @@ export default async function Success({ searchParams }) {
       author: metadata.author,
       price: metadata.price ? Number(metadata.price) : undefined,
       buyerId: metadata.buyerId,
+      sellerId: metadata.sellerId,
+      coverImage: metadata.coverImage,
       name: metadata.name || customerName,
       email: customerEmail,
       phone: metadata.phone || "",

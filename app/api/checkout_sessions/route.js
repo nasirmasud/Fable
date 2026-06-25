@@ -15,6 +15,7 @@ export async function POST(request) {
       author,
       buyerId,
       coverImage,
+      sellerId,
     } = await request.json();
 
     if (!bookTitle || price == null) {
@@ -54,6 +55,7 @@ export async function POST(request) {
         name: name ? String(name) : "",
         phone: phone ? String(phone) : "",
         coverImage: coverImage ? String(coverImage) : "",
+        sellerId: sellerId ? String(sellerId) : "",
       },
     });
 

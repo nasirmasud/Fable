@@ -11,6 +11,7 @@ import {
   Trash2
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 function formatDate(dateStr) {
   if (!dateStr) return "—";
@@ -247,9 +248,11 @@ export default async function WritersEbooks() {
               <div className="flex items-center justify-end gap-2">
                 {/* Actions (Update this block) */}
                 <div className="flex items-center justify-end gap-3 pr-2">
-                  <button className="text-gray-400 hover:text-white transition-colors">
-                    <Pencil size={18} />
-                  </button>
+                  <Link href={`/dashboard/writer/add-ebook?id=${book._id}`}>
+                    <button className="text-gray-400 hover:text-white transition-colors">
+                      <Pencil size={18} />
+                    </button>
+                  </Link>
                   <button className="text-red-400/80 hover:text-red-500 transition-colors">
                     <Trash2 size={18} />
                   </button>

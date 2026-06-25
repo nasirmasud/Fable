@@ -31,46 +31,6 @@ const BuyEbookPage = ({ ebook, user }) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-
-  //   const submissionData = {
-  //     bookId: ebook?._id,
-  //     author: ebook.author,
-  //     bookTitle: ebook?.title,
-  //     price: ebook?.price,
-  //     buyerId: user?.id,
-  //     ...form,
-  //   };
-
-  //   const res = await soldEbook(submissionData);
-
-  //   if (!res.insertedId) {
-  //     alert('Something went wrong!');
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   const checkoutRes = await fetch("/api/checkout_sessions", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({
-  //       bookId: ebook?._id,
-  //       bookTitle: ebook?.title,
-  //       price: ebook?.price,
-  //       email: form.email,
-  //     }),
-  //   });
-
-  //   const data = await checkoutRes.json();
-  //   if (data.url) {
-  //     window.location.href = data.url
-  //   }
-
-  //   setLoading(false);
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -89,6 +49,7 @@ const BuyEbookPage = ({ ebook, user }) => {
           author: ebook?.author,
           buyerId: user?.id,
           coverImage: ebook?.coverPreview,
+          sellerId: ebook?.writerEmail,
         }),
       });
 
@@ -107,6 +68,8 @@ const BuyEbookPage = ({ ebook, user }) => {
   };
 
   const price = ebook?.price ?? 0;
+
+  console.log("ebook:", ebook?.writerEmail);
 
   return (
     <div className="min-h-screen bg-[#0d0d1a] text-white font-sans flex flex-col">
