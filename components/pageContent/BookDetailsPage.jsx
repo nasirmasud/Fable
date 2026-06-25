@@ -20,11 +20,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { BookCard } from "./AllEbooks";
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
 
 function StarRating({ value, max = 5, size = 16 }) {
   return (
@@ -43,8 +42,6 @@ function StarRating({ value, max = 5, size = 16 }) {
     </div>
   );
 }
-
-// ─── Static mock data for similar books ─────────────────────────────────────
 
 const SIMILAR_BOOKS = [
   {
@@ -102,9 +99,8 @@ const MOCK_REVIEWS = [
   },
 ];
 
-// ─── Main Component ──────────────────────────────────────────────────────────
-
 export default function BookDetailsPage({ book, id }) {
+  const router = useRouter();
   const [descExpanded, setDescExpanded] = useState(false);
 
   if (!book) {
@@ -145,7 +141,7 @@ export default function BookDetailsPage({ book, id }) {
 
   return (
     <div className="min-h-screen bg-[#0d0d1a] text-white font-sans p-10">
-      {/* ── Breadcrumb ── */}
+      {/* Breadcrumb */}
       <nav className="px-4 md:px-8 pt-5 pb-2 flex items-center gap-2 text-sm text-gray-400">
         <span className="hover:text-white cursor-pointer transition-colors">Home</span>
         <ChevronRight size={14} />
@@ -155,13 +151,11 @@ export default function BookDetailsPage({ book, id }) {
       </nav>
 
       <main className="px-4 md:px-8 py-6 w-full">
-        {/* ── Two-column layout: left=content, right=sidebar ── */}
         <div className="flex flex-col lg:flex-row gap-8">
 
-          {/* ── LEFT COLUMN ── */}
+          {/* LEFT COLUMN */}
           <div className="flex-1 min-w-0 space-y-8">
 
-            {/* ── Hero Section ── */}
             <section className="flex flex-col md:flex-row gap-8">
               {/* Cover */}
               <div className="shrink-0">
@@ -185,7 +179,6 @@ export default function BookDetailsPage({ book, id }) {
 
               {/* Meta */}
               <div className="flex-1 space-y-4">
-                {/* Status badge */}
                 <Badge
                   className={
                     isDraft
@@ -197,6 +190,17 @@ export default function BookDetailsPage({ book, id }) {
                 </Badge>
 
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{title}</h1>
+
+                {/* Author নাম */}
+                <p className="text-gray-400 text-sm">
+                  by{" "}
+                  <span
+                    onClick={() => router.push(`/authors/${encodeURIComponent(book.author ?? writerEmail)}`)}
+                    className="text-purple-400 hover:text-purple-300 transition-colors cursor-pointer"
+                  >
+                    {book.author ?? writerEmail}
+                  </span>
+                </p>
 
                 {/* Rating */}
                 <div className="flex items-center gap-2">
@@ -227,12 +231,10 @@ export default function BookDetailsPage({ book, id }) {
 
                 <Separator className="bg-white/10" />
 
-                {/* Price */}
                 <p className="text-3xl font-bold text-purple-400">${price}</p>
 
-                {/* CTAs */}
                 <div className="flex flex-wrap gap-3">
-                  <Link href={`/all-books/${id}/read-more`} >
+                  <Link href={`/all-books/${id}/read-more`}>
                     <Button className="bg-purple-600 hover:bg-purple-700 text-white px-6 gap-2">
                       <BookOpen size={16} />
                       Read Now
@@ -249,7 +251,6 @@ export default function BookDetailsPage({ book, id }) {
                   </Button>
                 </div>
 
-                {/* Tags */}
                 <div className="flex flex-wrap gap-2 pt-1">
                   {tags?.map((tag) => (
                     <Badge
@@ -263,9 +264,8 @@ export default function BookDetailsPage({ book, id }) {
               </div>
             </section>
 
-            {/* ── About + Stats ── */}
+            {/* About + Stats */}
             <div className="space-y-4">
-              {/* About - full width */}
               <Card className="bg-[#13132b] border-white/10 text-white">
                 <CardContent className="p-6 space-y-3">
                   <h2 className="font-semibold text-lg">About This Book</h2>
@@ -286,7 +286,6 @@ export default function BookDetailsPage({ book, id }) {
                 </CardContent>
               </Card>
 
-              {/* Stats - 4 cols */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
                   {
@@ -310,9 +309,8 @@ export default function BookDetailsPage({ book, id }) {
               </div>
             </div>
 
-            {/* ── Preview + Author Row ── */}
+            {/* Preview + Author Row */}
             <div className="grid md:grid-cols-3 gap-6 items-start">
-              {/* Preview — takes 2/3 width */}
               <Card className="md:col-span-2 bg-[#13132b] border-white/10 text-white flex flex-col">
                 <CardContent className="p-6 space-y-3 flex-1">
                   <h2 className="font-semibold text-lg">Preview</h2>
@@ -324,7 +322,7 @@ export default function BookDetailsPage({ book, id }) {
                       <Lock size={14} />
                       Continue reading after purchase
                     </span>
-                    <Link href={`/all-books/${id}/read-more`} >
+                    <Link href={`/all-books/${id}/read-more`}>
                       <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2 text-sm px-4">
                         <BookOpen size={14} />
                         Buy Now
@@ -334,17 +332,19 @@ export default function BookDetailsPage({ book, id }) {
                 </CardContent>
               </Card>
 
-              {/* Author — takes 1/3 width */}
+              {/* Author Card */}
               <Card className="bg-[#13132b] border-white/10 text-white">
                 <CardContent className="p-6 space-y-4">
                   <h2 className="font-semibold text-lg">Author Information</h2>
                   <div className="flex items-center gap-3">
                     <Avatar className="w-10 h-10 bg-gray-600">
                       <AvatarFallback className="bg-gray-600 text-gray-200 text-sm">
-                        {writerEmail?.[0]?.toUpperCase() ?? "A"}
+                        {(book.author ?? writerEmail)?.[0]?.toUpperCase() ?? "A"}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm text-gray-300">{writerEmail}</span>
+                    <span className="text-sm text-gray-300">
+                      {book.author ?? writerEmail}
+                    </span>
                   </div>
                   <Separator className="bg-white/10" />
                   {[
@@ -371,12 +371,10 @@ export default function BookDetailsPage({ book, id }) {
               </Card>
             </div>
 
-          </div>{/* end LEFT COLUMN */}
+          </div>
 
-          {/* ── RIGHT SIDEBAR ── */}
+          {/* RIGHT SIDEBAR */}
           <aside className="w-full lg:w-[360px] xl:w-[420px] 2xl:w-[480px] flex-shrink-0 space-y-8">
-
-            {/* Similar Books */}
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Similar Books</h2>
@@ -384,27 +382,22 @@ export default function BookDetailsPage({ book, id }) {
                   View All <ChevronRight size={14} />
                 </button>
               </div>
-
-              {/* ২ কলামের গ্রিড যেখানে তোমার নতুন BookCard বসবে */}
               <div className="grid grid-cols-2 gap-4">
                 {SIMILAR_BOOKS.map((b) => {
-                  // মক ডেটার প্রোপার্টি নেমগুলোকে BookCard এর সাথে ম্যাচ করানোর জন্য একটি অবজেক্ট তৈরি
                   const adaptedBook = {
                     _id: b.id,
                     title: b.title,
                     coverPreview: b.cover,
-                    genre: genre, // মূল বইয়ের জেনারেটি এখানে পাস করে দেওয়া হলো
+                    genre: genre,
                     rating: b.rating,
                     price: b.price,
-                    author: b.author
+                    author: b.author,
                   };
-
                   return <BookCard key={b.id} book={adaptedBook} />;
                 })}
               </div>
             </section>
 
-            {/* Reviews */}
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Reviews (28)</h2>
@@ -437,6 +430,7 @@ export default function BookDetailsPage({ book, id }) {
               </div>
             </section>
           </aside>
+
         </div>
       </main>
     </div>
