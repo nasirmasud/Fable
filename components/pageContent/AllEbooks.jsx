@@ -29,8 +29,6 @@ import FloatingParticles from "../tools/FloatingParticles";
 const SORT_OPTIONS = ["Popular", "Newest", "Price: Low to High", "Price: High to Low", "Rating"];
 const PER_PAGE = 14;
 
-// ── helpers ───────────────────────────────────────────────────────────────────
-
 function resolveAuthor(book) {
   if (book.author) return book.author;
   if (!book.writerEmail) return "Unknown Author";
@@ -47,9 +45,7 @@ function formatPrice(price) {
   return `$${n.toFixed(2)}`;
 }
 
-// ── Book Card ─────────────────────────────────────────────────────────────────
-
-export function BookCard({ book, priority = false }) {
+export function BookCard({ book, priority = false, isPurchased = false }) {
   return (
     <Link
       href={`/all-books/${book._id}`}
@@ -57,7 +53,6 @@ export function BookCard({ book, priority = false }) {
     >
       <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
 
-      {/* Cover */}
       <div className="relative aspect-3/4 overflow-hidden">
         <Image
           src={book.coverPreview}
@@ -67,7 +62,16 @@ export function BookCard({ book, priority = false }) {
           className="object-cover group-hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 15vw"
         />
-        {/* Genre badge */}
+
+        {/* Purchased badge */}
+        {isPurchased && (
+          <div className="absolute top-2 right-2 z-10">
+            <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shadow-lg">
+              ✓ Owned
+            </span>
+          </div>
+        )}
+
         {book.genre && (
           <Badge className="absolute top-2 left-2 bg-purple-600/80 hover:bg-purple-600/80 text-purple-100 text-[10px] uppercase tracking-wide backdrop-blur-sm border-0 px-2 py-0.5 z-10">
             {book.genre}
@@ -75,7 +79,6 @@ export function BookCard({ book, priority = false }) {
         )}
       </div>
 
-      {/* Info */}
       <div className="p-3">
         <h3 className="text-white font-semibold text-sm leading-snug line-clamp-2 mb-0.5">
           {book.title}
@@ -88,8 +91,8 @@ export function BookCard({ book, priority = false }) {
               {book.rating ?? "—"}
             </span>
           </div>
-          <span className="text-purple-400 font-bold text-sm">
-            {formatPrice(book.price)}
+          <span className={`font-bold text-sm ${isPurchased ? "text-green-400" : "text-purple-400"}`}>
+            {isPurchased ? "Owned" : formatPrice(book.price)}
           </span>
         </div>
       </div>
@@ -97,15 +100,12 @@ export function BookCard({ book, priority = false }) {
   );
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
-
-export default function AllBooksClient({ ebooks }) {
+export default function AllBooksClient({ ebooks, purchasedBookIds = new Set() }) {
   const [activeGenre, setActiveGenre] = useState("All");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("Popular");
   const [page, setPage] = useState(1);
 
-  // Genre list — unique genres fetch from API
   const genres = useMemo(() => {
     const unique = Array.from(
       new Set((ebooks ?? []).map((b) => b.genre).filter(Boolean))
@@ -113,7 +113,6 @@ export default function AllBooksClient({ ebooks }) {
     return ["All", ...unique];
   }, [ebooks]);
 
-  // Filter
   const filtered = useMemo(() => {
     let list = ebooks ?? [];
 
@@ -130,7 +129,6 @@ export default function AllBooksClient({ ebooks }) {
       );
     }
 
-    // Sort
     const sorted = [...list];
     if (sort === "Newest") {
       sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -157,7 +155,6 @@ export default function AllBooksClient({ ebooks }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Pagination items
   const paginationItems = [];
   if (totalPages <= 7) {
     for (let i = 1; i <= totalPages; i++) paginationItems.push(i);
@@ -168,9 +165,7 @@ export default function AllBooksClient({ ebooks }) {
   return (
     <main className="min-h-screen bg-[#0b0c1e] text-white">
 
-      {/* ── HERO ── */}
       <section className="relative overflow-hidden">
-        {/* Background image */}
         <div className="absolute inset-0">
           <Image
             src="/all-book-cover.png"
@@ -193,7 +188,6 @@ export default function AllBooksClient({ ebooks }) {
             mystery, sci-fi and more.
           </p>
 
-          {/* Search + Filter */}
           <div className="flex flex-wrap gap-3 mb-8">
             <div className="relative flex-1 min-w-60 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 z-10" />
@@ -215,7 +209,6 @@ export default function AllBooksClient({ ebooks }) {
             </Button>
           </div>
 
-          {/* Genre tabs */}
           <div className="flex flex-wrap gap-2">
             {genres.map((g) => (
               <Button
@@ -237,10 +230,8 @@ export default function AllBooksClient({ ebooks }) {
         </div>
       </section>
 
-      {/* ── BOOK GRID ── */}
       <section className="w-full px-8 sm:px-12 lg:px-20 pb-16">
 
-        {/* Meta row */}
         <div className="flex items-center justify-between mb-6 mt-8">
           <p className="text-white/40 text-sm">
             {filtered.length === 0
@@ -248,7 +239,6 @@ export default function AllBooksClient({ ebooks }) {
               : `Showing ${start}–${end} of ${filtered.length.toLocaleString()} books`}
           </p>
 
-          {/* Sort dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 bg-[#131428] border border-white/10 text-white/70 hover:text-white hover:bg-[#1a1b34] hover:border-purple-500/40 rounded-xl px-4 py-2 text-sm outline-none transition">
               Sort by: {sort}
@@ -276,11 +266,15 @@ export default function AllBooksClient({ ebooks }) {
           </DropdownMenu>
         </div>
 
-        {/* Grid */}
         {paginated.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-10">
             {paginated.map((book, index) => (
-              <BookCard key={book._id} book={book} priority={page === 1 && index < 2} />
+              <BookCard
+                key={book._id}
+                book={book}
+                priority={page === 1 && index < 2}
+                isPurchased={purchasedBookIds.has(String(book._id))}
+              />
             ))}
           </div>
         ) : (
@@ -296,7 +290,6 @@ export default function AllBooksClient({ ebooks }) {
           </div>
         )}
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <Pagination className="mt-10">
             <PaginationContent>
