@@ -1,4 +1,5 @@
 import { Compass, CreditCard, Laptop, Check, Lock, RefreshCw } from "lucide-react";
+import FloatingParticles from "@/components/tools/FloatingParticles";
 import { FadeLeft, StaggerContainer, StaggerItem } from "@/components/tools/MotionWrapper";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SurfaceCard from "@/components/ui/SurfaceCard";
@@ -11,8 +12,9 @@ export default function HowFableWorks() {
   return (
     <section
       id="how-it-works"
-      className="w-full bg-white px-6 md:px-10 lg:px-16 dark:bg-surface-container-lowest/30"
+      className="relative overflow-hidden w-full bg-white px-6 md:px-10 lg:px-16 dark:bg-[#070314] font-sans transition-colors duration-300"
     >
+      <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
       <div className="mx-auto w-full max-w-7xl">
         <FadeLeft>
           <SectionHeader
