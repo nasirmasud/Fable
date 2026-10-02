@@ -69,6 +69,10 @@
   --color-brand-star: #fbbf24;
   --color-brand-muted: #9496b8;
   --color-brand-canvas: #070714;
+
+  --color-primary-container: #a078ff;
+  --color-tertiary-container: #b76dff;
+  --color-secondary-container: #3131c0;
 }
 
 :root {
