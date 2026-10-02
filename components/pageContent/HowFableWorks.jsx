@@ -11,7 +11,7 @@ export default function HowFableWorks() {
   return (
     <section
       id="how-it-works"
-      className="w-full bg-white py-16 px-6 md:px-10 lg:px-16 dark:bg-surface-container-lowest/30"
+      className="w-full bg-white px-6 md:px-10 lg:px-16 dark:bg-surface-container-lowest/30"
     >
       <div className="mx-auto w-full max-w-7xl">
         <FadeLeft>
