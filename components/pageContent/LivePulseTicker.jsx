@@ -7,9 +7,9 @@ export default function LivePulseTicker() {
   return (
     <section
       aria-label="Recent activity on Fable"
-      className="w-full border-y border-brand-violet/10 bg-white dark:bg-surface-container-lowest/40"
+      className="w-full bg-brand-violet/[0.03] dark:bg-surface-container-lowest/40"
     >
-      <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-2.5 md:px-10 lg:px-16">
+      <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-3 md:px-10 lg:px-16">
         <span className="flex shrink-0 items-center gap-2 rounded-full bg-brand-violet/10 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-brand-violet uppercase">
           <span className="relative flex size-1.5">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-brand-violet opacity-75 motion-reduce:animate-none" />
