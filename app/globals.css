@@ -51,6 +51,26 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Cosmic Luminary palette - additive only, nothing above is re-valued */
+@theme {
+  --color-surface-container-lowest: #0d0d1a;
+  --color-surface-container-low: #1a1a28;
+  --color-surface-container: #1e1e2c;
+  --color-surface-container-high: #292937;
+  --color-surface-container-highest: #343342;
+
+  --color-on-surface: #e3e0f4;
+  --color-on-surface-variant: #cbc3d7;
+  --color-outline-variant: #494454;
+
+  --color-brand-violet: #8b5cf6;
+  --color-brand-indigo: #6366f1;
+  --color-brand-fuchsia: #a855f7;
+  --color-brand-star: #fbbf24;
+  --color-brand-muted: #9496b8;
+  --color-brand-canvas: #070714;
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -145,3 +165,4 @@
     transform: translateY(-60px) scale(1.2);
   }
 }
+
