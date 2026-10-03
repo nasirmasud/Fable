@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-export default function FloatingParticles({
+export default function ParticleField({
   count = 18,
   color = 'rgba(167,139,250,0.6)',
   density = 1,
