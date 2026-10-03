@@ -17,7 +17,7 @@ export default function SubscribeBanner() {
   };
 
   return (
-    <section className="relative overflow-hidden w-full bg-background dark:bg-[#070314] pt-16 px-6 md:px-10 lg:px-16 font-sans transition-colors duration-300">
+    <section className="section-y relative overflow-hidden w-full bg-background dark:bg-[#070314] px-6 md:px-10 lg:px-16 font-sans transition-colors duration-300">
       <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
       <div className="w-full mx-auto">
 
