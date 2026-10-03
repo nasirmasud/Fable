@@ -52,8 +52,6 @@ export function BookCard({ book, priority = false, isPurchased = false }) {
       href={`/all-books/${book._id}`}
       className="group block relative bg-[#131428] border border-white/5 rounded overflow-hidden cursor-pointer hover:border-purple-500/40 hover:shadow-[0_0_24px_rgba(139,92,246,0.15)] transition-all duration-300"
     >
-      <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
-
       <div className="relative aspect-3/4 overflow-hidden">
         <Image
           src={book.coverPreview}
@@ -177,6 +175,7 @@ export default function AllBooksClient({ ebooks, purchasedBookIds = new Set() })
     <main className="min-h-screen bg-[#0b0c1e] text-white">
 
       <section className="relative overflow-hidden">
+        <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
         <div className="absolute inset-0">
           <Image
             src="/all-book-cover.png"
