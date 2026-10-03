@@ -65,7 +65,24 @@ export default async function FeaturedEbooks() {
 
         {/* Grid */}
         <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 md:gap-6">
-          {featuredBooks.map((book, index) => (
+          {featuredBooks.length === 0 ? (
+            <div className="col-span-full rounded-xl border border-white/10 bg-white/[0.03] px-6 py-12 text-center">
+              <p className="text-white/70 text-sm font-medium">
+                We couldn&apos;t load any books right now.
+              </p>
+              <p className="text-white/40 text-xs mt-1.5">
+                This is usually temporary. Try refreshing, or browse the full catalogue.
+              </p>
+              <Link
+                href="/all-books"
+                className="inline-flex items-center gap-1.5 mt-5 text-sm font-semibold text-[#6344f5] dark:text-purple-400 hover:text-purple-300 transition-colors"
+              >
+                Browse all books
+                <ArrowRight size={16} />
+              </Link>
+            </div>
+          ) : (
+            featuredBooks.map((book, index) => (
             <StaggerItem key={book._id}>
               <Link
                 href={`/all-books/${book._id}`}
@@ -111,7 +128,8 @@ export default async function FeaturedEbooks() {
                 </div>
               </Link>
             </StaggerItem>
-          ))}
+            ))
+          )}
         </StaggerContainer>
 
       </div>
