@@ -92,7 +92,7 @@ const genres = [
 
 export default function EbookGenres() {
   return (
-    <section className="relative overflow-hidden w-full bg-white dark:bg-[#070314] py-20 px-6 md:px-10 md:py-24 lg:px-16 font-sans transition-colors duration-300">
+    <section className="relative overflow-hidden w-full bg-background dark:bg-[#070314] py-20 px-6 md:px-10 md:py-24 lg:px-16 font-sans transition-colors duration-300">
       <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
       <div className="w-full mx-auto">
 

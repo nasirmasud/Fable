@@ -1,6 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
+
+// Deterministic PRNG so server and client render identical markup.
+// Math.random() during render causes a hydration mismatch, and moving it into an
+// effect trips react-hooks/set-state-in-effect.
+function mulberry32(seed) {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
 
 export default function FloatingParticles({
   count = 18,
@@ -9,19 +22,17 @@ export default function FloatingParticles({
   className = '',
 }) {
   const particleCount = Math.round(count * density)
-  const [particles, setParticles] = useState([])
 
-  useEffect(() => {
-    setParticles(
-      Array.from({ length: particleCount }, (_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 4 + 2,
-        delay: Math.random() * 3,
-        duration: Math.random() * 3 + 2,
-      }))
-    )
+  const particles = useMemo(() => {
+    const rand = mulberry32(particleCount * 2654435761)
+    return Array.from({ length: particleCount }, (_, i) => ({
+      id: i,
+      x: rand() * 100,
+      y: rand() * 100,
+      size: rand() * 4 + 2,
+      delay: rand() * 3,
+      duration: rand() * 3 + 2,
+    }))
   }, [particleCount])
 
   return (
@@ -35,7 +46,7 @@ export default function FloatingParticles({
             top: `${p.y}%`,
             width: p.size,
             height: p.size,
-            background: color,
+            '--fp-color': color,
             animationDelay: `${p.delay}s`,
             animationDuration: `${p.duration}s`,
           }}
@@ -49,6 +60,20 @@ export default function FloatingParticles({
           pointer-events: none;
           z-index: 1;
           animation: floatUp linear infinite;
+
+          /* Day mode: the incoming color is a light lavender that composites to
+             ~1.35:1 on the near-white section backgrounds, so it is invisible.
+             Use a deeper brand purple instead, which lands near 6:1. */
+          background: rgba(74, 47, 214, 0.9);
+          box-shadow:
+            0 0 0 1px rgba(74, 47, 214, 0.35),
+            0 0 8px rgba(74, 47, 214, 0.35);
+        }
+
+        /* Dark mode keeps the per-usage color that callers pass in. */
+        :global(.dark) .fp-particle {
+          background: var(--fp-color, rgba(167, 139, 250, 0.6));
+          box-shadow: 0 0 8px var(--fp-color, rgba(167, 139, 250, 0.5));
         }
         @keyframes floatUp {
           0% {
