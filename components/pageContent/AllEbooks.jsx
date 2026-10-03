@@ -1,8 +1,8 @@
 "use client";
 
 import { Search, SlidersHorizontal } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -100,20 +100,20 @@ export function BookCard({ book, priority = false, isPurchased = false }) {
 
 export default function AllBooksClient({ ebooks, purchasedBookIds = new Set() }) {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   // URL থেকে genre পড়া, না থাকলে "All"
-  const genreFromUrl = searchParams.get("genre") ?? "All";
+  const activeGenre = searchParams.get("genre") ?? "All";
 
-  const [activeGenre, setActiveGenre] = useState("All");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("Popular");
   const [page, setPage] = useState(1);
 
-  // URL-এ genre থাকলে automatically সেটা active করা
-  useEffect(() => {
-    setActiveGenre(genreFromUrl);
+  // Genre is derived straight from the URL, so no effect is needed to sync it.
+  const handleGenreChange = (genre) => {
     setPage(1);
-  }, [genreFromUrl]);
+    router.push(genre === "All" ? "/all-books" : `/all-books?genre=${encodeURIComponent(genre)}`);
+  };
 
   const genres = useMemo(() => {
     const unique = Array.from(
@@ -225,7 +225,7 @@ export default function AllBooksClient({ ebooks, purchasedBookIds = new Set() })
                 key={g}
                 variant={activeGenre === g ? "default" : "ghost"}
                 size="sm"
-                onClick={() => { setActiveGenre(g); setPage(1); }}
+                onClick={() => handleGenreChange(g)}
                 className={cn(
                   "rounded-full text-sm font-medium transition",
                   activeGenre === g
@@ -292,7 +292,7 @@ export default function AllBooksClient({ ebooks, purchasedBookIds = new Set() })
             <p className="text-lg">No books found for &ldquo;{search}&rdquo;</p>
             <Button
               variant="link"
-              onClick={() => { setSearch(""); setActiveGenre("All"); }}
+              onClick={() => { setSearch(""); handleGenreChange("All"); }}
               className="mt-2 text-purple-400 hover:text-purple-300 p-0 h-auto text-sm"
             >
               Clear filters
