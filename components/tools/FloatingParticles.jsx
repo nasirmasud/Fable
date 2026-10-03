@@ -5,12 +5,15 @@ import { useEffect, useState } from 'react'
 export default function FloatingParticles({
   count = 18,
   color = 'rgba(167,139,250,0.6)',
+  density = 1,
+  className = '',
 }) {
+  const particleCount = Math.round(count * density)
   const [particles, setParticles] = useState([])
 
   useEffect(() => {
     setParticles(
-      Array.from({ length: count }, (_, i) => ({
+      Array.from({ length: particleCount }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
@@ -19,14 +22,14 @@ export default function FloatingParticles({
         duration: Math.random() * 3 + 2,
       }))
     )
-  }, [count])
+  }, [particleCount])
 
   return (
-    <>
-      {particles.map(p => (
+    <div className={`absolute inset-0 overflow-hidden ${className}`}>
+      {particles.map((p) => (
         <span
           key={p.id}
-          className="fp-particle"  // ← style jsx এর class এর সাথে match
+          className="fp-particle"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
@@ -48,14 +51,24 @@ export default function FloatingParticles({
           animation: floatUp linear infinite;
         }
         @keyframes floatUp {
-          0%   { opacity: 0; transform: translateY(0) scale(0.8); }
-          50%  { opacity: 1; }
-          100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+          0% {
+            opacity: 0;
+            transform: translateY(0) scale(0.8);
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-60px) scale(1.2);
+          }
         }
         @media (prefers-reduced-motion: reduce) {
-          .fp-particle { animation: none; }
+          .fp-particle {
+            animation: none;
+          }
         }
       `}</style>
-    </>
+    </div>
   )
 }
