@@ -12,7 +12,7 @@ export default function HowFableWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative overflow-hidden w-full bg-white px-6 md:px-10 lg:px-16 dark:bg-[#070314] font-sans transition-colors duration-300"
+      className="relative overflow-hidden w-full bg-white px-6 py-20 md:px-10 md:py-24 lg:px-16 dark:bg-[#070314] font-sans transition-colors duration-300"
     >
       <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
       <div className="mx-auto w-full max-w-7xl">
