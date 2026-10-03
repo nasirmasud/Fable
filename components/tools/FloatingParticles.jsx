@@ -1,6 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
+
+// Deterministic PRNG so server and client render identical markup.
+// Math.random() during render causes a hydration mismatch, and moving it into an
+// effect trips react-hooks/set-state-in-effect.
+function mulberry32(seed) {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
 
 export default function FloatingParticles({
   count = 18,
@@ -9,19 +22,17 @@ export default function FloatingParticles({
   className = '',
 }) {
   const particleCount = Math.round(count * density)
-  const [particles, setParticles] = useState([])
 
-  useEffect(() => {
-    setParticles(
-      Array.from({ length: particleCount }, (_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 4 + 2,
-        delay: Math.random() * 3,
-        duration: Math.random() * 3 + 2,
-      }))
-    )
+  const particles = useMemo(() => {
+    const rand = mulberry32(particleCount * 2654435761)
+    return Array.from({ length: particleCount }, (_, i) => ({
+      id: i,
+      x: rand() * 100,
+      y: rand() * 100,
+      size: rand() * 4 + 2,
+      delay: rand() * 3,
+      duration: rand() * 3 + 2,
+    }))
   }, [particleCount])
 
   return (
