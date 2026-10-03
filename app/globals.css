@@ -183,3 +183,20 @@
   animation: marquee linear infinite;
 }
 
+/* Shared vertical rhythm for home page sections */
+.section-y {
+  padding-block: 6rem;
+}
+
+@media (min-width: 48rem) {
+  .section-y {
+    padding-block: 8rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .section-y {
+    padding-block: 9rem;
+  }
+}
+
