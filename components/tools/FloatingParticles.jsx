@@ -25,7 +25,7 @@ export default function FloatingParticles({
   }, [particleCount])
 
   return (
-    <div className={`absolute inset-0 overflow-hidden ${className}`}>
+    <div className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}>
       {particles.map((p) => (
         <span
           key={p.id}
