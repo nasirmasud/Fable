@@ -46,7 +46,7 @@ export default function FloatingParticles({
             top: `${p.y}%`,
             width: p.size,
             height: p.size,
-            background: color,
+            '--fp-color': color,
             animationDelay: `${p.delay}s`,
             animationDuration: `${p.duration}s`,
           }}
@@ -60,6 +60,20 @@ export default function FloatingParticles({
           pointer-events: none;
           z-index: 1;
           animation: floatUp linear infinite;
+
+          /* Day mode: the incoming color is a light lavender that composites to
+             ~1.35:1 on the near-white section backgrounds, so it is invisible.
+             Use the brand purple instead, which lands near 3.4:1. */
+          background: rgba(99, 68, 245, 0.75);
+          box-shadow:
+            0 0 0 1px rgba(99, 68, 245, 0.18),
+            0 0 8px rgba(99, 68, 245, 0.35);
+        }
+
+        /* Dark mode keeps the per-usage color that callers pass in. */
+        :global(.dark) .fp-particle {
+          background: var(--fp-color, rgba(167, 139, 250, 0.6));
+          box-shadow: 0 0 8px var(--fp-color, rgba(167, 139, 250, 0.5));
         }
         @keyframes floatUp {
           0% {
