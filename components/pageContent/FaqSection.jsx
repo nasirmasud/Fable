@@ -5,14 +5,19 @@ import { ChevronDown } from "lucide-react";
 import { FadeLeft } from "@/components/tools/MotionWrapper";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { faq } from "@/lib/data/homeSections";
+import FloatingParticles from "@/components/tools/FloatingParticles";
 
 export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState(null);
   const baseId = useId();
 
   return (
-    <section className="w-full bg-white py-16 px-6 md:px-10 lg:px-16 dark:bg-surface-container-lowest/30">
-      <div className="mx-auto w-full max-w-7xl">
+    <section className="relative w-full overflow-hidden bg-white px-6 py-20 md:px-10 md:py-24 lg:px-16 font-sans transition-colors duration-300 dark:bg-[#070314]">
+      <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-brand-violet/20 via-transparent to-transparent blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_30%_20%,rgba(139,92,246,0.18),transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(700px_circle_at_70%_80%,rgba(168,85,247,0.14),transparent_75%)]" />
+      <FloatingParticles count={25} color="rgba(167,139,250,0.5)" />
+      <div className="relative mx-auto w-full max-w-3xl">
         <FadeLeft>
           <SectionHeader
             eyebrow="Questions"
@@ -21,7 +26,7 @@ export default function FaqSection() {
           />
         </FadeLeft>
 
-        <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-3 lg:grid-cols-2">
+        <div className="mt-12 grid grid-cols-1 gap-y-3">
           {faq.map((item, index) => {
             const isOpen = openIndex === index;
             const panelId = `${baseId}-panel-${index}`;
