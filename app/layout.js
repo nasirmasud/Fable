@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       className={`${plusJakartaSans.variable} dark h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className='min-h-full flex flex-col'>
+      <body className='min-h-full flex flex-col bg-background'>
         <ThemeProvider
           attribute='class'
           defaultTheme='dark'
