@@ -63,11 +63,11 @@ export default function FloatingParticles({
 
           /* Day mode: the incoming color is a light lavender that composites to
              ~1.35:1 on the near-white section backgrounds, so it is invisible.
-             Use the brand purple instead, which lands near 3.4:1. */
-          background: rgba(99, 68, 245, 0.75);
+             Use a deeper brand purple instead, which lands near 6:1. */
+          background: rgba(74, 47, 214, 0.9);
           box-shadow:
-            0 0 0 1px rgba(99, 68, 245, 0.18),
-            0 0 8px rgba(99, 68, 245, 0.35);
+            0 0 0 1px rgba(74, 47, 214, 0.35),
+            0 0 8px rgba(74, 47, 214, 0.35);
         }
 
         /* Dark mode keeps the per-usage color that callers pass in. */
